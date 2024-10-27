@@ -1,6 +1,8 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import session from 'express-session';
+import flash from 'connect-flash';
 
 export const app = express();
 
@@ -28,6 +30,30 @@ app.use(express.static('public'));
 
 // Parse cookies from the incoming requests and populate req.cookies with an object keyed by the cookie names
 app.use(cookieParser());
+
+// Session and flash middleware
+app.use(
+    session({
+        secret: 'your-secret-key',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            secure: false,
+            maxAge: 1000 * 60 * 15, // Session expiry (15 minutes)
+        },
+    })
+);
+
+// Flash message middleware
+app.use(flash());
+
+// Pass flash messages to all views
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg')[0] || null;
+    res.locals.error_msg = req.flash('error_msg')[0] || null;
+    next();
+});
+
 
 // Set view engine to ejs
 app.set('view engine', 'ejs');
