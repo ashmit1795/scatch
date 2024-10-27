@@ -37,6 +37,7 @@ const adminSchema = new Schema({
     },
     role: {
         type: String,
+        enum: ["manager", "owner"],
         default: "manager"
     }
 }, {timestamps: true});
@@ -82,6 +83,11 @@ adminSchema.methods.generateRefreshToken = function() {
     {
         expiresIn: process.env.REFRESH_TOKEN_SECRET_EXPIRES_IN
     });
+}
+
+// Check if admin is owner or not
+adminSchema.methods.isOwner = function(){
+    return this.role === "owner";
 }
 
 const Admin = mongoose.model("Admin", adminSchema);
