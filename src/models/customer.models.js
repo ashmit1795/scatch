@@ -24,6 +24,14 @@ const customerSchema = new Schema({
         trim: true,
         index: true
     },
+    contact:{
+        type: Number,
+        required: true
+    },
+    address:{
+        type: String,
+        required: true
+    },
     avatar: {
         type: String, //cloudinary url
         required: true
@@ -60,7 +68,8 @@ customerSchema.methods.generateAccessToken = function() {
         _id: this._id,
         username: this.username,
         email: this.email,
-        fullName: this.fullName
+        fullName: this.fullName,
+        role: "customer",
     }, 
     process.env.ACCESS_TOKEN_SECRET, 
     {
