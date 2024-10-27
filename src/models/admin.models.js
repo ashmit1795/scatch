@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import AppError from "../utils/AppError";
+import AppError from "../utils/AppError.js";
 
 // Admin schema
 const adminSchema = new Schema({
@@ -64,7 +64,8 @@ adminSchema.methods.generateAccessToken = function(){
         _id: this._id,
         username: this.username,
         email: this.email,
-        fullName: this.fullName
+        fullName: this.fullName,
+        role: this.role
     }, 
     process.env.ACCESS_TOKEN_SECRET, 
     {
