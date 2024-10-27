@@ -31,3 +31,15 @@ app.use(cookieParser());
 
 // Set view engine to ejs
 app.set('view engine', 'ejs');
+
+// Import routes
+import adminRoutes from './routes/admin.routes.js';
+import cartRoutes from './routes/cart.routes.js';
+import customerRoutes from './routes/customer.routes.js';
+import productRoutes from './routes/product.routes.js';
+
+// Use routes
+app.use('/app/admin', adminRoutes);
+app.use('/app/cart', cartRoutes);
+app.use('/app/customer', customerRoutes);
+app.use('/app/product', productRoutes);
