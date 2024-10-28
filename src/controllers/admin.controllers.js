@@ -72,13 +72,13 @@ const createAdmin = asyncHandler(async (req, res, next) => {
         avatar: avatarUploadResponse.url
     });
 
-    const createdAdmin = await User.findById(newAdmin._id).select("-password -refreshToken");
+    const createdAdmin = await Admin.findById(newAdmin._id).select("-password -refreshToken");
     if (!createdAdmin) {
         adminDebug('Error creating admin');
         throw new AppError(500, 'An error occurred while creating the admin');
     }
 
-    const { accessToken, refreshToken } = await generateTokens(createdUser._id);
+    const { accessToken, refreshToken } = await generateTokens(createdAdmin._id);
 
     const options = {
         httpOnly: true,
@@ -90,7 +90,7 @@ const createAdmin = asyncHandler(async (req, res, next) => {
     return res.status(201)
         .cookie('accessToken', accessToken, options)
         .cookie('refreshToken', refreshToken, options)
-        .redirect('/app/admin/dashboard');
+        .redirect('/app/admin/');
 });
 
 const loginAdmin = asyncHandler(async (req, res, next) => {
@@ -156,7 +156,56 @@ const loginAdmin = asyncHandler(async (req, res, next) => {
 
 });
 
-export { createAdmin, loginAdmin };
+const renderAdminDashboard = asyncHandler(async (req, res, next) => {
+    adminDebug('Rendering Admin Dashboard');
+    const user = await Admin.findById(req.user._id);
+    res.render('admin-dashboard', {user: user});
+});
+
+const renderManagerApproval = asyncHandler(async (req, res, next) => {
+    adminDebug('Rendering Manager Approval');
+    const managers = await Admin.find({ role: 'manager', approved: false });
+    res.render('manager-approval', {pendingManagers: managers});
+});
+
+const managerApproval = asyncHandler(async(req, res, next) => {
+    const { managerId } = req.params;
+    adminDebug('Approving Manager');
+
+    const manager = await Admin.findById(managerId);
+    if (!manager) {
+        adminDebug('Manager not found');
+        req.flash('error_msg', 'Manager not found');
+        return res.status(404).redirect('/app/admin/manager-approval');
+    }
+
+    manager.approved = true;
+    await manager.save({ validateBeforeSave: false });
+
+    adminDebug('Manager approved');
+    req.flash('success_msg', 'Manager approved');
+    return res.status(200).redirect('/app/admin/manager-approval');
+});
+
+const managerDenial = asyncHandler(async(req, res, next) => {
+    const { managerId } = req.params;
+    adminDebug('Denying Manager');
+
+    const manager = await Admin.findById(managerId);
+    if (!manager) {
+        adminDebug('Manager not found');
+        req.flash('error_msg', 'Manager not found');
+        return res.status(404).redirect('/app/admin/manager-approval');
+    }
+    // Delete manager
+    await Admin.findByIdAndDelete(managerId);
+
+    adminDebug('Manager denied');
+    req.flash('success_msg', 'Manager denied');
+    return res.status(200).redirect('/app/admin/manager-approval');
+});
+
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial };
 
 async function generateTokens(adminId) {
 
