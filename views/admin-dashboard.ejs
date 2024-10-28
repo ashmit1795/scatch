@@ -1,120 +1,62 @@
 <%- include('./partials/header') %>
-<% if(success_msg){ %>
+
+<% if (success_msg) { %>
     <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-green-500">
         <span class="inline-block mt-1 mb-1 text-white">
             <%= success_msg %>
         </span>
     </div>
 <% } %>
-    <div class="w-full h-screen flex items-start px-20 py-20">
-        <div class="w-[25%] flex h-screen flex-col items-start">
+
+<div class="w-full h-screen flex flex-col px-20 py-10">
+
+    <!-- Welcome Section -->
+    <div class="flex items-center gap-4 mb-10">
+        <img src="https://via.placeholder.com/50" alt="Admin Avatar" class="w-14 h-14 rounded-full border border-gray-300">
+        <div>
+            <h2 class="text-2xl font-semibold">Welcome, <%= user.fullName %></h2>
+            <p class="text-gray-600">Dashboard Overview</p>
+        </div>
+    </div>
+
+    <div class="flex items-start">
+        <!-- Sidebar -->
+        <div class="w-[25%] flex flex-col items-start">
             <div class="flex flex-col">
-                <a class="block w-fit mb-2" href="">All Products</a>
-                <a class="block w-fit mb-2" href="">Create new product</a>
+                <% if (user.role === "owner") { %>
+                    <a class="block w-fit mb-4 text-blue-500 hover:underline" href="/app/admin/manager-approval">Manager Approvals</a>
+                <% } %>
+                <a class="block w-fit mb-4 text-gray-700 hover:underline" href="/app/admin/products">All Products</a>
+                <a class="block w-fit mb-4 text-gray-700 hover:underline" href="/app/admin/create-product">Create New Product</a>
             </div>
         </div>
-        <div class="w-[75%] flex flex-col gap-5 h-screen">
-            <a class="text-red-500" href="">Delete all</a>
-            <div class="flex items-start gap-5">
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
+
+        <!-- Product Management Section -->
+        <div class="w-[75%] flex flex-col gap-5">
+            <h2 class="text-2xl font-semibold mb-5">Product Management</h2>
+            <a class="text-red-500 mb-5 hover:underline" href="/app/admin/delete-all-products">Delete All Products</a>
+
+            <!-- Product Cards -->
+            <div class="flex flex-wrap gap-5">
+                <% for (let i = 0; i < 4; i++) { %>
+                    <div class="w-60 bg-white border border-gray-200 shadow-lg rounded-md overflow-hidden">
+                        <div class="w-full h-52 bg-yellow-100 flex items-center justify-center text-gray-600">
+                            <span>Product Image</span>
                         </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
+                        <div class="flex justify-between items-center px-4 py-4 bg-gray-50">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-800">Sample Product <%= i + 1 %></h3>
+                                <h4 class="text-gray-700">₹ 1200</h4>
+                            </div>
+                            <a class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600" href="/app/admin/edit-product/<%= i + 1 %>">
+                                <i class="ri-edit-line"></i>
+                            </a>
                         </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
                     </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="flex items-start gap-5">
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="w-60 bg-red-500">
-                    <div class="w-full h-52 bg-yellow-500"></div>
-                    <div class="flex justify-between items-center px-4 py-4">
-                        <div>
-                            <h3>Clinge Bag</h3>
-                            <h4>₹ 1200</h4>
-                        </div>
-                        <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white" href="">
-                            <i class="ri-add-line"></i>
-                        </a>
-                    </div>
-                </div>
+                <% } %>
             </div>
         </div>
     </div>
-    <%- include('./partials/footer') %>
+</div>
+
+<%- include('./partials/footer') %>
