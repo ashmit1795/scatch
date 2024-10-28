@@ -39,6 +39,10 @@ const adminSchema = new Schema({
         type: String,
         enum: ["manager", "owner"],
         default: "manager"
+    },
+    approved: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true});
 
