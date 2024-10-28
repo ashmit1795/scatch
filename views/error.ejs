@@ -13,11 +13,11 @@
 
     <!-- Error Description and Suggestions -->
     <div class="mt-4 text-center">
-        <% if (status && status.startsWith('4')) { %>
+        <% if (status && String(status).startsWith('4')) { %>
             <p class="text-lg text-gray-600">
                 Oops! It looks like the page you're looking for doesn’t exist or you don't have permission to view it.
             </p>
-        <% } else if (status && status.startsWith('5')) { %>
+        <% } else if (status && String(status).startsWith('5')) { %>
             <p class="text-lg text-gray-600">
                 Sorry! Something went wrong on our end. We're working on fixing this issue.
             </p>
