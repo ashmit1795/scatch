@@ -6,6 +6,11 @@ import AppError from '../utils/AppError.js';
 
 const adminDebug = debug("app:controller:admin");
 
+const renderAdminCreate = (req, res, next) => {
+    adminDebug('Rendering Admin Create');
+    res.render('admin-create');
+};
+
 const createAdmin = asyncHandler(async (req, res, next) => {
     adminDebug('Registering Admin');
     let { username, email, fullName, password, role } = req.body;
@@ -92,6 +97,11 @@ const createAdmin = asyncHandler(async (req, res, next) => {
         .cookie('refreshToken', refreshToken, options)
         .redirect('/app/admin/');
 });
+
+const renderAdminLogin = (req, res, next) => {
+    adminDebug('Rendering Admin Login');
+    res.render('admin-login');
+};
 
 const loginAdmin = asyncHandler(async (req, res, next) => {
     let username;
@@ -205,7 +215,7 @@ const managerDenial = asyncHandler(async(req, res, next) => {
     return res.status(200).redirect('/app/admin/manager-approval');
 });
 
-export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial };
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin };
 
 async function generateTokens(adminId) {
 
