@@ -18,6 +18,7 @@ const productSchema = new Schema({
     },
     category: {
         type: String,
+        default: "Others"
     },
     image: {
         type: String,
