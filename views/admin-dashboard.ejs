@@ -1,9 +1,17 @@
 <%- include('./partials/header') %>
 
 <% if (success_msg) { %>
-    <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-green-500">
+    <div id="flash-success" class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-green-500">
         <span class="inline-block mt-1 mb-1 text-white">
             <%= success_msg %>
+        </span>
+    </div>
+<% } %>
+
+<% if(error_msg){ %>
+    <div id="flash-error" class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
+        <span class="inline-block mt-1 mb-1 text-white">
+            <%= error_msg %>
         </span>
     </div>
 <% } %>
