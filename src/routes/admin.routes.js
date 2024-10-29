@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import upload from '../middlewares/multer.middleware.js';
-import { createAdmin, loginAdmin, managerApproval, managerDenial, renderAdminCreate, renderAdminDashboard, renderAdminLogin, renderManagerApproval } from '../controllers/admin.controllers.js';
+import { createAdmin, loginAdmin, logoutAdmin, managerApproval, managerDenial, renderAdminCreate, renderAdminDashboard, renderAdminLogin, renderManagerApproval } from '../controllers/admin.controllers.js';
 import { authenticateUser, authorizeUser } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
 router.route('/').get(renderAdminLogin).post(loginAdmin);
+
+router.route('/logout').get(authenticateUser, logoutAdmin);
 
 router.route('/create').get(renderAdminCreate).post(upload.single('avatar'), createAdmin);
 
