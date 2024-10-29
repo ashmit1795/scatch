@@ -172,6 +172,33 @@ const renderAdminDashboard = asyncHandler(async (req, res, next) => {
     res.render('admin-dashboard', {user: user});
 });
 
+const logoutAdmin = asyncHandler(async (req, res, next) => {
+    adminDebug('Logging out Admin');
+    adminDebug('User ID: ', req.user);
+    const admin = await Admin.findById(req.user._id);
+    if (!admin) {
+        adminDebug('Admin not found');
+        req.flash('error_msg', 'Admin not found');
+        return res.status(404).redirect('/app/admin/');
+    }
+
+    admin.refreshToken = null;
+    await admin.save({ validateBeforeSave: false });
+
+    adminDebug('Logout successful');
+    req.flash('success_msg', 'Logout successful');
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res.status(200)
+            .clearCookie("refreshToken", options)    
+            .clearCookie("accessToken", options)
+            .redirect('/app/admin/');
+});
+
 const renderManagerApproval = asyncHandler(async (req, res, next) => {
     adminDebug('Rendering Manager Approval');
     const managers = await Admin.find({ role: 'manager', approved: false });
@@ -215,7 +242,7 @@ const managerDenial = asyncHandler(async(req, res, next) => {
     return res.status(200).redirect('/app/admin/manager-approval');
 });
 
-export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin };
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin };
 
 async function generateTokens(adminId) {
 
