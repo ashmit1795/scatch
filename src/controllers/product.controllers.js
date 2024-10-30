@@ -12,7 +12,7 @@ const renderCreateProduct = (req, res, next) => {
 
 const createProduct = asyncHandler(async (req, res, next) => {
     productDebug('Creating Product');
-    const { name, description, price, category, stock, discount, bgColor, panelColor, textColor } = req.body;
+    const { name, description, price, category, stock, discount, bgColor } = req.body;
     const imageLocalPath = req.file.path;
 
     // Upload image to Cloudinary
@@ -33,8 +33,6 @@ const createProduct = asyncHandler(async (req, res, next) => {
         stock,
         discount,
         bgColor,
-        panelColor,
-        textColor,
         image: imageUploadResponse.url,
         createdBy: req.user._id
     });
