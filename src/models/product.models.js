@@ -36,14 +36,6 @@ const productSchema = new Schema({
         type: String,
         default: "#ffffff"
     },
-    panelColor: {
-        type: String,
-        default: "#ffffff"
-    },
-    textColor: {
-        type: String,
-        default: "#000000"
-    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: "Admin",
