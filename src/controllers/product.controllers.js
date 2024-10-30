@@ -20,7 +20,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
     if(!imageUploadResponse.url){
         productDebug('Image upload failed');
         req.flash('error_msg', 'Image upload failed');
-        return res.status(500).redirect('/product/create');
+        return res.status(500).redirect('/app/product/create');
     }
     productDebug('Image uploaded to Cloudinary');
 
@@ -41,11 +41,11 @@ const createProduct = asyncHandler(async (req, res, next) => {
     if(!createdProduct){
         productDebug('Error creating product');
         req.flash('error_msg', 'Error creating product');
-        return res.status(500).redirect('/product/create');
+        return res.status(500).redirect('/app/product/create');
     }
     productDebug('Product created successfully');
     req.flash('success_msg', 'Product created successfully');
-    return res.status(201).redirect('/product/create');
+    return res.status(201).redirect('/app/product/create');
 });
 
 export { renderCreateProduct, createProduct };
