@@ -3,6 +3,7 @@ import Admin from '../models/admin.models.js';
 import {uploadToCloudinary} from '../utils/Cloudinary.js';
 import { asyncHandler } from '../utils/AsyncHandler.js';
 import AppError from '../utils/AppError.js';
+import Product from '../models/product.models.js';
 
 const adminDebug = debug("app:controller:admin");
 
@@ -168,8 +169,9 @@ const loginAdmin = asyncHandler(async (req, res, next) => {
 
 const renderAdminDashboard = asyncHandler(async (req, res, next) => {
     adminDebug('Rendering Admin Dashboard');
-    const user = await Admin.findById(req.user._id);
-    res.render('admin-dashboard', {user: user});
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    const products = await Product.find({ createdBy: admin._id });
+    res.render('admin-dashboard', {user: admin, products: products});
 });
 
 const logoutAdmin = asyncHandler(async (req, res, next) => {
