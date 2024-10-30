@@ -35,7 +35,8 @@ const createProduct = asyncHandler(async (req, res, next) => {
         bgColor,
         panelColor,
         textColor,
-        image: imageUploadResponse.url
+        image: imageUploadResponse.url,
+        createdBy: req.user._id
     });
 
     const createdProduct = await Product.findById(newProduct._id);
