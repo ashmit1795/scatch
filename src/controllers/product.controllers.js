@@ -48,4 +48,11 @@ const createProduct = asyncHandler(async (req, res, next) => {
     return res.status(201).redirect('/app/product/create');
 });
 
-export { renderCreateProduct, createProduct };
+const renderEditProduct = async (req, res, next) => {
+    productDebug('Rendering Edit Product');
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    res.render('edit-product', { product });
+};
+
+export { renderCreateProduct, createProduct, renderEditProduct };
