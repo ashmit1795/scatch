@@ -245,7 +245,14 @@ const managerDenial = asyncHandler(async(req, res, next) => {
     return res.status(200).redirect('/app/admin/manager-approval');
 });
 
-export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin };
+const renderAllProducts = asyncHandler(async (req, res, next) => {
+    adminDebug('Rendering All Products');
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    const products = await Product.find().populate('createdBy', 'username fullName');
+    res.render('admin-all-products', { user: admin, products });
+});
+
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin, renderAllProducts };
 
 async function generateTokens(adminId) {
 
