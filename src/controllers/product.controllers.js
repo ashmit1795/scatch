@@ -58,4 +58,50 @@ const renderEditProduct = async (req, res, next) => {
     res.render('edit-product', { user: admin, product });
 };
 
-export { renderCreateProduct, createProduct, renderEditProduct };
+const editProduct = asyncHandler(async (req, res, next) => {
+    productDebug('Editing Product');
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    if(!product){
+        productDebug('Product not found');
+        req.flash('error_msg', 'Product not found');
+        return res.status(404).redirect('/app/product/create');
+    }
+    productDebug('Product found');
+    const { name, description, price, category, stock, discount, bgColor } = req.body;
+    if(req.file){
+        const imageLocalPath = req.file.path;
+        // Upload image to Cloudinary
+        const imageUploadResponse = await uploadToCloudinary(imageLocalPath, 'product');
+        if(!imageUploadResponse.url){
+            productDebug('Image upload failed');
+            req.flash('error_msg', 'Image upload failed');
+            return res.status(500).redirect(`/app/product/edit/${productId}`);
+        }
+        productDebug('Image uploaded to Cloudinary');
+    }
+    const updatedProduct = await Product.findByIdAndUpdate(
+        product._id,
+        {
+            name,
+            description,
+            price,
+            category,
+            stock,
+            discount,
+            bgColor,
+            image: req.file ? imageUploadResponse.url : product.image
+        },
+        { new: true }
+    );
+    if(!updatedProduct){
+        productDebug('Error updating product');
+        req.flash('error_msg', 'Error updating product');
+        return res.status(500).redirect(`/app/product/edit/${productId}`);
+    }
+    productDebug('Product updated successfully');
+    req.flash('success_msg', 'Product updated successfully');
+    return res.status(200).redirect(`/app/product/edit/${updatedProduct._id}`);
+});
+
+export { renderCreateProduct, createProduct, renderEditProduct, editProduct };
