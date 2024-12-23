@@ -23,8 +23,13 @@
             <form action="/app/admin/" method="post">
                 <input class="block bg-zinc-100 w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
                     type="email" placeholder="Username or Email" name="usernameOrEmail">
-                <input class="block bg-zinc-100 w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
-                    type="password" placeholder="Password" name="password">
+                <div class="relative">
+                    <input id="password" class="block bg-zinc-100 w-full px-3 py-2 border-[1px] rounded-md mb-3 border-zinc-200"
+                        type="password" placeholder="Password" name="password" required>
+                    <button type="button" id="togglePassword" class="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                        <i class="ri-eye-line"></i> <!-- Icon for the eye -->
+                    </button>
+                </div>
                 <input class="px-5 rounded-full py-3 mt-2 bg-blue-500 text-white" type="submit" value="Login">
             </form>
         </div>
