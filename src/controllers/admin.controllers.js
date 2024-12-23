@@ -9,7 +9,7 @@ const adminDebug = debug("app:controller:admin");
 
 const renderAdminCreate = (req, res, next) => {
     adminDebug('Rendering Admin Create');
-    res.render('admin-create');
+    res.render('admin-create', { user: undefined });
 };
 
 const createAdmin = asyncHandler(async (req, res, next) => {
@@ -101,7 +101,7 @@ const createAdmin = asyncHandler(async (req, res, next) => {
 
 const renderAdminLogin = (req, res, next) => {
     adminDebug('Rendering Admin Login');
-    res.render('admin-login');
+    res.render('admin-login', { user: undefined});
 };
 
 const loginAdmin = asyncHandler(async (req, res, next) => {
@@ -203,8 +203,9 @@ const logoutAdmin = asyncHandler(async (req, res, next) => {
 
 const renderManagerApproval = asyncHandler(async (req, res, next) => {
     adminDebug('Rendering Manager Approval');
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
     const managers = await Admin.find({ role: 'manager', approved: false });
-    res.render('manager-approval', {pendingManagers: managers});
+    res.render('manager-approval', {user: admin, pendingManagers: managers});
 });
 
 const managerApproval = asyncHandler(async(req, res, next) => {
