@@ -1,5 +1,4 @@
 import connectDB from './db/index.js';
-import express from 'express';
 import AppError from './utils/AppError.js';
 import dotenv from 'dotenv';
 import debug from 'debug';
@@ -12,7 +11,7 @@ dotenv.config({
 
 const port = process.env.PORT || 3000;
 
-// Define a debug namespace for the database and server
+// Debug namespace for the database and server
 const dbDebug = debug('app:database');
 const serverDebug = debug('app:server');
 
