@@ -1,78 +1,60 @@
 <%- include('./partials/header') %>
 
-<!-- Flash Messages -->
-<% if (success_msg) { %>
-    <div id="flash-success" class="fixed top-5 left-1/2 transform -translate-x-1/2 p-4 rounded-lg bg-green-500 shadow-lg">
-        <span class="text-white font-medium"><%= success_msg %></span>
-    </div>
-<% } %>
-
-<% if (error_msg) { %>
-    <div id="flash-error" class="fixed top-5 left-1/2 transform -translate-x-1/2 p-4 rounded-lg bg-red-500 shadow-lg">
-        <span class="text-white font-medium"><%= error_msg %></span>
-    </div>
-<% } %>
-
-<div class="w-full min-h-screen flex flex-col px-8 py-8 bg-gray-100">
-
+<div class="min-h-screen pt-28 bg-gray-100 px-8">
     <!-- Welcome Section -->
-    <div class="flex items-center gap-4 mb-8">
-        <img src="https://via.placeholder.com/50" alt="Admin Avatar" class="w-16 h-16 rounded-full border border-gray-200 shadow-md">
+    <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4 mb-8">
+        <img src="<%= user.avatar %>" alt="Admin Avatar" class="w-16 h-16 rounded-full border shadow-md">
         <div>
-            <h2 class="text-2xl font-semibold text-gray-800">Welcome, <%= user.fullName %></h2>
+            <h2 class="text-2xl font-bold text-gray-800">Welcome, <%= user.fullName %></h2>
             <p class="text-gray-500">Dashboard Overview</p>
         </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row gap-8">
-        
+    <!-- Dashboard Content -->
+    <div class="flex flex-col lg:flex-row gap-6">
         <!-- Sidebar -->
-        <div class="w-full lg:w-1/4 bg-white rounded-xl p-6 shadow-lg">
-            <nav class="flex flex-col gap-4">
-                <% if (user.role === "owner") { %>
-                    <a href="/app/admin/manager-approval" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">Manager Approvals</a>
-                <% } %>
-                <a href="/app/admin/products" class="text-gray-600 font-semibold hover:text-gray-800 transition-colors">All Products</a>
-                <a href="/app/product/create" class="text-gray-600 font-semibold hover:text-gray-800 transition-colors">Create New Product</a>
+        <div class="w-full lg:w-1/4 bg-white shadow rounded-lg p-6">
+            <nav class="flex flex-col space-y-4">
+                <a href="/app/admin/products" class="text-gray-600 font-medium hover:text-gray-800">All Products</a>
+                <a href="/app/product/create" class="text-gray-600 font-medium hover:text-gray-800">Create New Product</a>
             </nav>
         </div>
 
-        <!-- Product Management Section -->
+        <!-- Main Content -->
         <div class="w-full lg:w-3/4">
-            <div class="flex justify-between items-center mb-5">
-                <h2 class="text-2xl font-semibold text-gray-800">Product Management</h2>
+            <div class="bg-white shadow rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Product Management</h2>
+                    <% if (products.length > 0) { %>
+                        <a href="/app/admin/delete-all-products" class="text-red-600 font-medium hover:underline">Delete All Products</a>
+                    <% } %>
+                </div>
+
                 <% if (products.length > 0) { %>
-                    <a href="/app/admin/delete-all-products" class="text-red-600 font-semibold hover:underline transition-colors">Delete All Products</a>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        <% products.forEach(product => { %>
+                            <div class="bg-white shadow rounded-lg">
+                                <div class="h-40 flex items-center justify-center" style="background-color: '<%= product.bgColor %>';">
+                                    <img src="<%= product.image %>" alt="<%= product.name %>" class="h-24 object-contain">
+                                </div>
+                                <div class="p-4 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800"><%= product.name %></h3>
+                                        <p class="text-gray-600">₹ <%= product.price %></p>
+                                    </div>
+                                    <% if (product.createdBy.toString() === user._id.toString()) { %>
+                                        <a href="/app/product/edit/<%= product._id %>" class="text-blue-600 hover:text-blue-800">
+                                            <i class="ri-edit-line text-xl"></i>
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <p class="text-center text-gray-600">No products available. Please add new products to view them here.</p>
                 <% } %>
             </div>
-
-            <!-- Product Cards or No Products Message -->
-            <% if (products.length > 0) { %>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <% products.forEach(product => { %>
-                        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                            <div class="bg-[<%= product.bgColor %>] h-48 flex items-center justify-center">
-                                <img src="<%= product.image.toString()%>" alt="<%= product.name %>" class="h-32 object-contain">
-                            </div>
-                            <div class="p-4 flex justify-between items-center">
-                                <div class="text-gray-800">
-                                    <h3 class="text-lg font-semibold"><%= product.name %></h3>
-                                    <p class="text-sm font-medium">₹ <%= product.price %></p>
-                                </div>
-                                <% if (product.createdBy.toString() === user._id.toString()) { %>
-                                    <a href="/app/admin/edit-product/<%= product._id %>" class="text-blue-600 hover:text-blue-800 transition-colors">
-                                        <i class="ri-edit-line text-2xl"></i>
-                                    </a>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            <% } else { %>
-                <div class="flex items-center justify-center h-48 bg-white rounded-xl shadow-lg">
-                    <p class="text-gray-500 text-lg font-medium">No products available. Please add new products to view them here.</p>
-                </div>
-            <% } %>
         </div>
     </div>
 </div>
