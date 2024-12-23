@@ -1,0 +1,83 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen pt-28 pb-10 bg-gray-50 px-8">
+    <!-- Page Title -->
+    <div class="mb-8 flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-800">All Products</h1>
+        <a href="/app/product/create" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">
+            Add New Product
+        </a>
+    </div>
+
+    <!-- Products Table -->
+    <% if (products.length > 0) { %>
+        <div class="overflow-x-auto bg-white shadow rounded-lg">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 text-left text-gray-700">
+                        <th class="px-6 py-3 text-sm font-medium">Image</th>
+                        <th class="px-6 py-3 text-sm font-medium">Name</th>
+                        <th class="px-6 py-3 text-sm font-medium">Price</th>
+                        <th class="px-6 py-3 text-sm font-medium">Created By</th>
+                        <th class="px-6 py-3 text-sm font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr class="border-b">
+                            <!-- Product Image -->
+                            <td class="px-6 py-4">
+                                <img src="<%= product.image %>" alt="<%= product.name %>" class="w-16 h-16 object-contain">
+                            </td>
+
+                            <!-- Product Name -->
+                            <td class="px-6 py-4">
+                                <span class="text-gray-800 font-semibold"><%= product.name %></span>
+                            </td>
+
+                            <!-- Product Price -->
+                            <td class="px-6 py-4">
+                                ₹<%= product.price %>
+                            </td>
+
+                            <!-- Product Creator -->
+                            <td class="px-6 py-4">
+                                <span class="text-gray-600"><%= product.createdBy.fullName || 'Unknown' %></span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 flex gap-4">
+                                <% if(user.role === 'owner' || product.createdBy._id.toString() === user._id.toString()){ %>
+                                    <!-- Edit Button -->
+                                    <a href="/app/product/edit/<%= product._id %>" class="text-blue-600 hover:underline">
+                                        <i class="ri-edit-line text-lg"></i>
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <form action="/app/product/delete/<%= product._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
+                                        <button type="submit" class="text-red-600 hover:underline">
+                                            <i class="ri-delete-bin-line text-lg"></i>
+                                        </button>
+                                    </form>
+                                <% } else { %>
+                                    <span class="text-gray-400">No Actions</span>
+                                <% } %>
+
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="flex flex-col items-center justify-center mt-16">
+            <img src="/images/empty.svg" alt="No Products" class="w-48 mb-6">
+            <p class="text-center text-gray-600">No products available. Please add new products to view them here.</p>
+            <a href="/app/product/create" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">
+                Add New Product
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<%- include('./partials/footer') %>
