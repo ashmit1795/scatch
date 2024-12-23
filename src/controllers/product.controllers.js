@@ -2,13 +2,15 @@ import debug from "debug";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import Product from "../models/product.models.js";
 import { uploadToCloudinary } from "../utils/Cloudinary.js";
+import Admin from '../models/admin.models.js';
 
 const productDebug = debug("app:controller:product");
 
-const renderCreateProduct = (req, res, next) => {
-  productDebug('Rendering Create Product');
-  res.render('create-product');
-};
+const renderCreateProduct = asyncHandler(async (req, res, next) => {
+    productDebug('Rendering Create Product');
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    res.render('create-product', { user: admin });
+});
 
 const createProduct = asyncHandler(async (req, res, next) => {
     productDebug('Creating Product');
@@ -52,7 +54,8 @@ const renderEditProduct = async (req, res, next) => {
     productDebug('Rendering Edit Product');
     const productId = req.params.productId;
     const product = await Product.findById(productId);
-    res.render('edit-product', { product });
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    res.render('edit-product', { user: admin, product });
 };
 
 export { renderCreateProduct, createProduct, renderEditProduct };
