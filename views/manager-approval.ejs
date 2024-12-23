@@ -1,41 +1,29 @@
 <%- include('./partials/header') %>
 
-<% if (success_msg) { %>
-    <div id="flash-success" class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-green-500">
-        <span class="inline-block mt-1 mb-1 text-white">
-            <%= success_msg %>
-        </span>
-    </div>
-<% } %>
-
-<% if(error_msg){ %>
-    <div id="flash-error" class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
-        <span class="inline-block mt-1 mb-1 text-white">
-            <%= error_msg %>
-        </span>
-    </div>
-<% } %>
-
-<div class="w-full h-screen px-20 py-20">
-    <h2 class="text-2xl font-bold mb-6">Pending Manager Approvals</h2>
+<div class="w-full min-h-screen px-8 px-20 py-28 text-center bg-gray-50">
+    <h2 class="text-3xl font-extrabold text-gray-800 mb-8">Pending Manager Approvals</h2>
     
     <% if (pendingManagers.length > 0) { %>
-        <div class="space-y-4">
+        <div class="space-y-6">
             <% pendingManagers.forEach(manager => { %>
-                <div class="flex justify-between items-center bg-gray-100 p-4 rounded-md shadow-md">
-                    <div class="flex items-center gap-4">
-                        <!-- Display manager's avatar -->
-                        <img src="<%= manager.avatar %>" alt="<%= manager.fullName %>'s avatar" class="w-12 h-12 rounded-full">
+                <div class="flex justify-between items-center bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <!-- Manager's Information -->
+                    <div class="flex items-center gap-6">
+                        <img src="<%= manager.avatar %>" alt="<%= manager.fullName %>'s avatar" class="w-16 h-16 rounded-full shadow-sm">
                         <div>
-                            <h4 class="font-semibold"><%= manager.fullName %> (<%= manager.username %>)</h4>
+                            <h4 class="text-lg font-semibold text-gray-800"><%= manager.fullName %> (<%= manager.username %>)</h4>
                             <p class="text-sm text-gray-600">Email: <%= manager.email %></p>
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button onclick="confirmAction('/admin/approve-manager/<%= manager._id %>', 'approve')" class="px-4 py-2 bg-green-500 text-white rounded-md">
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4">
+                        <button onclick="confirmAction('/admin/approve-manager/<%= manager._id %>', 'approve')" 
+                                class="px-5 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
                             Approve
                         </button>
-                        <button onclick="confirmAction('/admin/deny-manager/<%= manager._id %>', 'deny')" class="px-4 py-2 bg-red-500 text-white rounded-md">
+                        <button onclick="confirmAction('/admin/deny-manager/<%= manager._id %>', 'deny')" 
+                                class="px-5 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition">
                             Deny
                         </button>
                     </div>
@@ -43,17 +31,26 @@
             <% }) %>
         </div>
     <% } else { %>
-        <p>No pending manager requests.</p>
+        <div class="flex flex-col items-center justify-center mt-20">
+            <i class="ri-user-line text-6xl text-gray-400 mb-6"></i>
+            <p class="text-lg text-gray-600">No pending manager requests at the moment.</p>
+        </div>
     <% } %>
 </div>
 
 <!-- Confirmation Modal -->
-<div id="confirmationModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-md shadow-md text-center">
-        <h3 class="text-lg font-semibold mb-4" id="confirmationMessage">Are you sure you want to proceed?</h3>
-        <div class="flex justify-center gap-4">
-            <button onclick="confirm()" class="px-4 py-2 bg-blue-500 text-white rounded-md">Confirm</button>
-            <button onclick="cancel()" class="px-4 py-2 bg-gray-500 text-white rounded-md">Cancel</button>
+<div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+        <h3 class="text-xl font-bold text-gray-800 mb-4" id="confirmationMessage">Are you sure you want to proceed?</h3>
+        <div class="flex justify-center gap-6">
+            <button onclick="confirm()" 
+                    class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition">
+                Confirm
+            </button>
+            <button onclick="cancel()" 
+                    class="px-6 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition">
+                Cancel
+            </button>
         </div>
     </div>
 </div>
