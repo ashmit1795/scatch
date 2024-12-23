@@ -9,7 +9,69 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="font-['helvetica_now_display']">
-    <nav class="w-full fixed top-0 left-0 px-5 py-3">
-        <h3 class="text-xl">Scatch</h3>
+<body class="bg-gray-100 font-['helvetica_now_display']">
+    <!-- Navbar -->
+    <nav class="w-full fixed top-0 left-0 px-5 py-3 bg-white shadow-md z-50 flex justify-between items-center">
+        <h3 class="text-2xl font-semibold text-blue-600">Scatch</h3>
+        <% if (user) { %>
+            <div class="hidden md:flex gap-5 items-center">
+                <% if (["manager", "owner"].includes(user.role)) { %>
+                    <a href="/app/admin/dashboard" class="hover:text-blue-600">Dashboard</a>
+                    <% if (user.role === "owner") { %>
+                        <a href="/app/admin/manager-approvals" class="hover:text-blue-600">Manager Approvals</a>
+                    <% } %>
+                    <a href="/app/orders" class="hover:text-blue-600">Orders</a>
+                <% } else { %>
+                    <a href="/app/shop" class="hover:text-blue-600">Shop</a>
+                    <a href="/app/cart" class="hover:text-blue-600">Cart</a>
+                <% } %>
+                <a href="/app/admin/logout" class="hover:text-blue-600">Logout</a>
+            </div>
+            <button id="toggleMenu" class="md:hidden">
+                <i class="ri-menu-line text-2xl"></i>
+            </button>
+        <% } %>
     </nav>
+
+    <!-- Mobile Menu -->
+    <% if (user) { %>
+        <div id="mobileMenu" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 z-40">
+            <div class="bg-white w-4/5 max-w-sm h-full p-5">
+                <button id="closeMenu" class="mb-5">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+                <nav class="flex flex-col gap-4">
+                    <% if (["manager", "owner"].includes(user.role)) { %>
+                        <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
+                        <% if (user.role === "owner") { %>
+                            <a href="/manager-approvals" class="hover:text-blue-600">Manager Approvals</a>
+                        <% } %>
+                        <a href="/products" class="hover:text-blue-600">Products</a>
+                        <a href="/orders" class="hover:text-blue-600">Orders</a>
+                    <% } else { %>
+                        <a href="/shop" class="hover:text-blue-600">Shop</a>
+                        <a href="/cart" class="hover:text-blue-600">Cart</a>
+                    <% } %>
+                    <a href="/logout" class="hover:text-blue-600">Logout</a>
+                </nav>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Flash Messages -->
+    <% if (success_msg) { %>
+    <div id="flash-success" class="fixed top-5 left-1/2 transform -translate-x-1/2 p-3 rounded-md bg-green-500 shadow-lg z-50">
+        <span class="text-white">
+            <%= success_msg %>
+        </span>
+    </div>
+    <% } %>
+
+    <% if (error_msg) { %>
+    <div id="flash-error" class="fixed top-5 left-1/2 transform -translate-x-1/2 p-3 rounded-md bg-red-500 shadow-lg z-50">
+        <span class="text-white">
+            <%= error_msg %>
+        </span>
+    </div>
+    <% } %>
+
