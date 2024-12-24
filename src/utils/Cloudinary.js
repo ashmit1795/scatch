@@ -1,6 +1,9 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import AppError from "./AppError.js";
+import debug from "debug";
+
+// Namespace for debugging
+const cloudinaryDebug = debug("app:utils:cloudinary");
 
 cloudinary.config({
     cloudinary_url: process.env.CLOUDINARY_URL,
@@ -23,7 +26,7 @@ export const uploadToCloudinary = async (localFilePath) => {
     } catch (error) {
         // An error occurred while uploading the file to Cloudinary
         fs.unlinkSync(localFilePath || '');
-        throw new AppError(500, 'Error uploading file to Cloudinary');
+        cloudinaryDebug('Error uploading file to Cloudinary:', error);
     }
 };
 
@@ -33,9 +36,9 @@ export const deleteFileFromCloudinary = async (url) => {
         const publicId = getPublicIdFromUrl(url);
         // Delete the file from Cloudinary
         const result = await cloudinary.uploader.destroy(publicId);
-        console.log('File deleted successfully:', result);
+        cloudinaryDebug('Deleted file from Cloudinary:', result);
     } catch (error) {
-        console.error('Error deleting file from Cloudinary:', error);
+        cloudinaryDebug('Error deleting file from Cloudinary:', error);
     }
 };
 
