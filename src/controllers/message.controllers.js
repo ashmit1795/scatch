@@ -34,4 +34,29 @@ const sendMessage = asyncHandler(async (req, res, next) => {
     return res.redirect('/app/admin/all-managers');
 });
 
-export { sendMessage };
+const updateMessageStatus = asyncHandler(async (req, res, next) => {
+    const { messageId } = req.params;
+    const { status } = req.body;
+
+    messageDebug('Validating message data');
+    if(!messageId || !status) {
+       req.flash('error_msg', 'Please provide a message ID and status');
+       return res.redirect('/app/admin/dashboard');
+    }
+
+    const message = await Message.findById(messageId);
+    if(!message) {
+        req.flash('error_msg', 'Message not found');
+        return res.redirect('/app/admin/dashboard');
+    }
+    messageDebug('Message found:', message);
+    messageDebug('Updating message status');
+    message.status = status;
+    await message.save();
+
+    messageDebug('Message status updated');
+    req.flash('success_msg', 'Message status updated successfully');
+    return res.json({ success: true, message: "Message status updated successfully" }).redirect('/app/admin/dashboard');
+});
+
+export { sendMessage, updateMessageStatus };

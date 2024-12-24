@@ -2,11 +2,11 @@
 
 <div class="min-h-screen pt-28 pb-10 bg-gray-50 px-8">
     <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 shadow rounded-lg p-6 flex items-center gap-4 mb-8 text-white">
+    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg rounded-lg p-6 flex items-center gap-4 mb-8 text-white">
         <img src="<%= user.avatar %>" alt="Admin Avatar" class="w-16 h-16 rounded-full border-2 border-white shadow-md">
         <div class="flex flex-col gap-1">
             <h2 class="text-2xl font-bold">Welcome, <%= user.fullName %></h2>
-            <p class="text-sm">Here's your dashboard overview</p>
+            <p class="text-sm opacity-90">Your personalized dashboard overview</p>
         </div>
         <!-- Role Badge -->
         <span class="ml-auto px-4 py-1 bg-white text-blue-600 font-semibold text-sm rounded-full shadow">
@@ -17,13 +17,13 @@
     <!-- Dashboard Content -->
     <div class="flex flex-col lg:flex-row gap-6">
         <!-- Sidebar -->
-        <div class="w-full lg:w-1/4 bg-white shadow rounded-lg p-6">
+        <div class="w-full lg:w-1/4 bg-white shadow-md rounded-lg p-6">
             <nav class="flex flex-col space-y-6">
-                <a href="/app/admin/all-products" class="flex items-center gap-3 text-gray-700 font-medium hover:bg-gray-100 p-3 rounded-md">
+                <a href="/app/admin/all-products" class="flex items-center gap-3 text-gray-700 font-medium hover:bg-blue-100 p-3 rounded-md">
                     <i class="ri-file-list-line text-xl text-blue-600"></i> 
                     All Products
                 </a>
-                <a href="/app/product/create" class="flex items-center gap-3 text-gray-700 font-medium hover:bg-gray-100 p-3 rounded-md">
+                <a href="/app/product/create" class="flex items-center gap-3 text-gray-700 font-medium hover:bg-green-100 p-3 rounded-md">
                     <i class="ri-add-circle-line text-xl text-green-600"></i>
                     Create New Product
                 </a>
@@ -32,12 +32,16 @@
 
         <!-- Main Content -->
         <div class="w-full lg:w-3/4">
-            <div class="bg-white shadow rounded-lg p-6">
+            <div class="bg-white shadow-md rounded-lg p-6">
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-gray-800">Product Management</h2>
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="ri-shopping-cart-line text-blue-600"></i> Product Management
+                    </h2>
                     <% if (products.length > 0) { %>
-                        <a href="/app/admin/delete-all-products" class="text-red-600 font-medium hover:underline">Delete All Products</a>
+                        <a href="/app/admin/delete-all-products" class="text-red-600 font-medium hover:underline">
+                            <i class="ri-delete-bin-line"></i> Delete All Products
+                        </a>
                     <% } %>
                 </div>
 
@@ -45,8 +49,8 @@
                 <% if (products.length > 0) { %>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         <% products.forEach(product => { %>
-                            <div class="bg-white shadow rounded-lg overflow-hidden">
-                                <div class="h-40 flex items-center justify-center bg-gray-100">
+                            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                <div class="h-40 flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200">
                                     <img src="<%= product.image %>" alt="<%= product.name %>" class="h-24 object-contain">
                                 </div>
                                 <div class="p-4 flex flex-col gap-2">
@@ -75,33 +79,59 @@
                 <% } %>
             </div>
 
+            
             <!-- Messages Section -->
-            <% if (user.role != 'owner') { %>
-                <div class="bg-white shadow rounded-lg p-6 mt-6">
+            <% if (user.role !== 'owner') { %>
+                <div class="bg-white shadow-lg rounded-xl p-6 mt-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-800">Messages from Owner</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ri-mail-line text-blue-600"></i> Messages from Owner
+                        </h2>
                     </div>
 
                     <% if (messages.length > 0) { %>
-                        <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <% messages.forEach(message => { %>
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-start">
-                                    <div>
-                                        <p class="text-gray-800"><strong>Message:</strong> <%= message.message %></p>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6">
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="ri-message-3-line text-blue-600 text-xl"></i>
+                                            <p class="text-gray-800 font-semibold">Message</p>
+                                        </div>
+                                        <p class="text-gray-700"><%= message.message %></p>
+                                        
                                         <% if (message.productId) { %>
-                                            <p class="text-gray-600 text-sm"><strong>Product:</strong> <%= message.productId.name %></p>
+                                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                                <i class="ri-shopping-cart-line text-gray-500"></i>
+                                                <span><strong>Product:</strong><a href="/app/product/edit/<%= message.productId._id %>" 
+                                                    class="text-blue-600 hover:underline"> <%= message.productId.name %></a></span>
+                                            </div>
                                         <% } %>
-                                        <p class="text-gray-600 text-sm"><strong>Status:</strong> <%= message.status %></p>
+
+                                        <div class="flex items-center gap-2 text-sm">
+                                            <i class="ri-information-line text-gray-500"></i>
+                                            <span>
+                                                <strong>Status:</strong> 
+                                                <span class="<%= message.status === 'resolved' 
+                                                                ? 'text-green-600 bg-green-100 px-2 py-1 rounded-full' 
+                                                                : message.status === 'rejected' 
+                                                                ? 'text-red-600 bg-red-100 px-2 py-1 rounded-full' 
+                                                                : 'text-gray-600 bg-gray-100 px-2 py-1 rounded-full' %>">
+                                                    <%= message.status.charAt(0).toUpperCase() + message.status.slice(1) %>
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
+                                    
                                     <% if (message.status === "unresolved") { %>
-                                        <div class="flex gap-4">
+                                        <div class="mt-4 flex justify-end gap-4">
                                             <button onclick="updateMessageStatus('<%= message._id %>', 'resolved')" 
-                                                    class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700">
-                                                Resolve
+                                                    class="px-4 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-all">
+                                                <i class="ri-check-line"></i> Resolve
                                             </button>
                                             <button onclick="updateMessageStatus('<%= message._id %>', 'rejected')" 
-                                                    class="px-4 py-2 bg-red-600 text-white rounded-md shadow hover:bg-red-700">
-                                                Reject
+                                                    class="px-4 py-2 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700 transition-all">
+                                                <i class="ri-close-line"></i> Reject
                                             </button>
                                         </div>
                                     <% } %>
@@ -110,68 +140,76 @@
                         </div>
                     <% } else { %>
                         <div class="flex flex-col items-center justify-center p-8">
-                            <i class="ri-mail-line text-4xl text-gray-400 mb-6"></i>
+                            <i class="ri-mail-line text-6xl text-gray-400 mb-6"></i>
                             <p class="text-center text-gray-600">No messages available.</p>
                         </div>
                     <% } %>
                 </div>
             <% } %>
 
+
+
             <!-- Sent Messages Section (for Owner) -->
             <% if (user.role === 'owner') { %>
-                <div class="bg-white shadow rounded-lg p-6 mt-6">
+                <div class="bg-white shadow-lg rounded-xl p-6 mt-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-800">Messages Sent by You</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ri-send-plane-line text-green-600"></i> Messages Sent by You
+                        </h2>
                     </div>
 
                     <% if (sentMessages.length > 0) { %>
-                        <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <% sentMessages.forEach(message => { %>
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-start">
-                                    <div>
-                                        <p class="text-gray-800"><strong>Message:</strong> <%= message.message %></p>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6">
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="ri-message-3-line text-green-600 text-xl"></i>
+                                            <p class="text-gray-800 font-semibold">Message</p>
+                                        </div>
+                                        <p class="text-gray-700"><%= message.message %></p>
+
                                         <% if (message.productId) { %>
-                                            <p class="text-gray-600 text-sm"><strong>Product:</strong> <%= message.productId.name %></p>
+                                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                                                <i class="ri-shopping-cart-line text-gray-500"></i>
+                                                <span><strong>Product:</strong><a href="/app/product/edit/<%= message.productId._id %>" 
+                                                    class="text-blue-600 hover:underline"> <%= message.productId.name %></a></span>
+                                            </div>
                                         <% } %>
-                                        <p class="text-gray-600 text-sm"><strong>Manager:</strong> <%= message.recipient.fullName %></p>
-                                        <p class="text-gray-600 text-sm"><strong>Status:</strong> <%= message.status %></p>
+
+                                        <div class="flex items-center gap-2 text-sm">
+                                            <i class="ri-user-line text-gray-500"></i>
+                                            <span><strong>Manager:</strong> <%= message.recipient.fullName %></span>
+                                        </div>
+
+                                        <div class="flex items-center gap-2 text-sm">
+                                            <i class="ri-information-line text-gray-500"></i>
+                                            <span>
+                                                <strong>Status:</strong> 
+                                                <span class="<%= message.status === 'resolved' 
+                                                                ? 'text-green-600 bg-green-100 px-2 py-1 rounded-full' 
+                                                                : message.status === 'rejected' 
+                                                                ? 'text-red-600 bg-red-100 px-2 py-1 rounded-full' 
+                                                                : 'text-gray-600 bg-gray-100 px-2 py-1 rounded-full' %>">
+                                                    <%= message.status.charAt(0).toUpperCase() + message.status.slice(1) %>
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             <% }) %>
                         </div>
                     <% } else { %>
                         <div class="flex flex-col items-center justify-center p-8">
-                            <i class="ri-mail-line text-4xl text-gray-400 mb-6"></i>
+                            <i class="ri-mail-line text-6xl text-gray-400 mb-6"></i>
                             <p class="text-center text-gray-600">You haven't sent any messages yet.</p>
                         </div>
                     <% } %>
                 </div>
             <% } %>
+
         </div>
     </div>
 </div>
-
-<script>
-    async function updateMessageStatus(messageId, status) {
-        try {
-            const response = await fetch(`/app/admin/message/update/${messageId}`, {
-                method: 'PUT',
-                body: JSON.stringify({ status }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                // Reload the page or update the message status in the UI
-                window.location.reload();
-            } else {
-                alert("Error updating message status");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
-</script>
 
 <%- include('./partials/footer') %>
