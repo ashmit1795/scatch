@@ -1,7 +1,7 @@
 import debug from "debug";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import Product from "../models/product.models.js";
-import { uploadToCloudinary } from "../utils/Cloudinary.js";
+import { uploadToCloudinary, deleteFileFromCloudinary } from "../utils/Cloudinary.js";
 import Admin from '../models/admin.models.js';
 
 const productDebug = debug("app:controller:product");
@@ -106,22 +106,32 @@ const editProduct = asyncHandler(async (req, res, next) => {
 
 const deleteProduct = asyncHandler(async (req, res, next) => {
     const productId = req.params.productId;
+    const redirectUrl = req.query.redirect || '/app/admin/all-products'; // Default to all-products if no query parameter is provided.
+
+    productDebug('Deleting Product');
     const product = await Product.findById(productId);
-    if(!product){
+    if (!product) {
         productDebug('Product not found');
         req.flash('error_msg', 'Product not found');
-        return res.status(404).redirect('/app/admin/all-products');
+        return res.status(404).redirect(redirectUrl);
     }
+
     productDebug('Product found');
+    // Delete image from Cloudinary
+    await deleteFileFromCloudinary(product.image);
+    productDebug('Image deleted from Cloudinary');
+    
     const deletedProduct = await Product.findByIdAndDelete(productId);
-    if(!deletedProduct){
+    if (!deletedProduct) {
         productDebug('Error deleting product');
         req.flash('error_msg', 'Error deleting product');
-        return res.status(500).redirect('/app/admin/all-products');
+        return res.status(500).redirect(redirectUrl);
     }
+
     productDebug('Product deleted successfully');
     req.flash('success_msg', 'Product deleted successfully');
-    return res.status(200).redirect('/app/admin/all-products');
+    return res.status(200).redirect(redirectUrl);
 });
+
 
 export { renderCreateProduct, createProduct, renderEditProduct, editProduct, deleteProduct };
