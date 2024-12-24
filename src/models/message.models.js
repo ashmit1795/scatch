@@ -20,7 +20,6 @@ const messageSchema = new Schema({
     productId: {
         type: Schema.Types.ObjectId,
         ref: "Product",
-        required: true
     },
     status: {
         type: String,
