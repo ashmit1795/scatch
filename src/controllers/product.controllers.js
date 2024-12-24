@@ -104,4 +104,24 @@ const editProduct = asyncHandler(async (req, res, next) => {
     return res.status(200).redirect(`/app/product/edit/${updatedProduct._id}`);
 });
 
-export { renderCreateProduct, createProduct, renderEditProduct, editProduct };
+const deleteProduct = asyncHandler(async (req, res, next) => {
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    if(!product){
+        productDebug('Product not found');
+        req.flash('error_msg', 'Product not found');
+        return res.status(404).redirect('/app/admin/all-products');
+    }
+    productDebug('Product found');
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+    if(!deletedProduct){
+        productDebug('Error deleting product');
+        req.flash('error_msg', 'Error deleting product');
+        return res.status(500).redirect('/app/admin/all-products');
+    }
+    productDebug('Product deleted successfully');
+    req.flash('success_msg', 'Product deleted successfully');
+    return res.status(200).redirect('/app/admin/all-products');
+});
+
+export { renderCreateProduct, createProduct, renderEditProduct, editProduct, deleteProduct };

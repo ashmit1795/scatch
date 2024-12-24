@@ -15,6 +15,7 @@
             <table class="w-full border-collapse">
                 <thead>
                     <tr class="bg-gray-100 text-left text-gray-700">
+                        <th class="px-6 py-3 text-sm font-medium">Product ID</th>
                         <th class="px-6 py-3 text-sm font-medium">Image</th>
                         <th class="px-6 py-3 text-sm font-medium">Name</th>
                         <th class="px-6 py-3 text-sm font-medium">Price</th>
@@ -25,6 +26,11 @@
                 <tbody>
                     <% products.forEach(product => { %>
                         <tr class="border-b">
+                            <!-- Product ID -->
+                            <td class="px-6 py-4">
+                                <span class="text-gray-600"><%= product._id %></span>
+                            </td>
+
                             <!-- Product Image -->
                             <td class="px-6 py-4">
                                 <img src="<%= product.image %>" alt="<%= product.name %>" class="w-16 h-16 object-contain">
@@ -58,15 +64,12 @@
                                     </a>
 
                                     <!-- Delete Button -->
-                                    <form action="/app/product/delete/<%= product._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
-                                        <button type="submit" class="text-red-600 hover:underline">
-                                            <i class="ri-delete-bin-line text-lg"></i>
-                                        </button>
-                                    </form>
+                                    <button onclick="openDeleteModal('<%= product._id %>')" class="text-red-600 hover:underline">
+                                        <i class="ri-delete-bin-line text-lg"></i>
+                                    </button>
                                 <% } else { %>
                                     <span class="py-4 text-gray-400">No Actions</span>
                                 <% } %>
-
                             </td>
                         </tr>
                     <% }) %>
