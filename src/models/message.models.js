@@ -13,7 +13,9 @@ const messageSchema = new Schema({
     },
     message: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        maxlength: 500 // Limit message length to 500 characters
     },
     productId: {
         type: Schema.Types.ObjectId,
@@ -25,7 +27,12 @@ const messageSchema = new Schema({
         enum: ['unresolved', 'resolved'],
         default: 'unresolved',
     },
-}, { timestamps: true });
+}, { 
+    timestamps: true 
+});
+
+// Add index for optimized querying based on recipient and status
+messageSchema.index({ recipient: 1, status: 1 });
 
 const Message = mongoose.model("Message", messageSchema);
 export default Message;
