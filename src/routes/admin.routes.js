@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import upload from '../middlewares/multer.middleware.js';
-import { createAdmin, getManagerData, loginAdmin, logoutAdmin, managerApproval, managerDenial, renderAdminCreate, renderAdminDashboard, renderAdminLogin, renderAllManagers, renderAllProducts, renderManagerApproval } from '../controllers/admin.controllers.js';
+import { createAdmin, loginAdmin, logoutAdmin, managerApproval, managerDenial, renderAdminCreate, renderAdminDashboard, renderAdminLogin, renderAllManagers, renderAllProducts, renderManagerApproval, fetchManagerMessageModalData } from '../controllers/admin.controllers.js';
 import { authenticateUser, authorizeUser } from '../middlewares/auth.middleware.js';
 
 const router = Router();
@@ -23,7 +23,7 @@ router.route('/all-products').get(authenticateUser, authorizeUser('owner', 'mana
 
 router.route('/all-managers').get(authenticateUser, authorizeUser('owner'), renderAllManagers);
 
-router.route('/manager-data/:managerId').get(authenticateUser, authorizeUser('owner'), getManagerData);
+router.route('/manager-data/:managerId').get(authenticateUser, authorizeUser('owner'), fetchManagerMessageModalData);
 
 if(process.env.NODE_ENV === 'development'){
     router.get('/error', (req, res) => {

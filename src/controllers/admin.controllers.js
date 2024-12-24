@@ -260,8 +260,40 @@ const renderAllManagers = asyncHandler(async (req, res, next) => {
     res.render('admin-all-managers', { user: admin, managers });
 });
 
-const getManagerData = asyncHandler(async (req, res, next) => {
+const fetchManagerMessageModalData = asyncHandler(async (req, res, next) => {
+    adminDebug('Rendering Manager Message Modal');
     const { managerId } = req.params;
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    const { manager, products, messages } = await getManagerData(managerId);
+    return res.json({ products, messages })
+});
+
+
+
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin, renderAllProducts, renderAllManagers, fetchManagerMessageModalData };
+
+async function generateTokens(adminId) {
+
+    try {
+        // 0
+        const admin = await Admin.findById(adminId);
+        // 1
+        const accessToken = admin.generateAccessToken();
+        // 2
+        const refreshToken = admin.generateRefreshToken();
+        // 3
+        admin.refreshToken = refreshToken;
+        await admin.save({ validateBeforeSave: false });
+        // 4
+        return { accessToken, refreshToken }
+        
+    } catch (error) {
+        adminDebug(error.message);
+        throw new AppError(500, "An error occurred while generating tokens");
+    } 
+}
+
+async function getManagerData (managerId) {
 
     adminDebug('Getting Manager Data');
     const manager = await Admin.findById(managerId).select("-password -refreshToken");
@@ -286,28 +318,5 @@ const getManagerData = asyncHandler(async (req, res, next) => {
         req.flash('error_msg', 'No messages found');
     }
 
-    return res.json({ products, messages });
-});
-
-export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin, renderAllProducts, renderAllManagers, getManagerData };
-
-async function generateTokens(adminId) {
-
-    try {
-        // 0
-        const admin = await Admin.findById(adminId);
-        // 1
-        const accessToken = admin.generateAccessToken();
-        // 2
-        const refreshToken = admin.generateRefreshToken();
-        // 3
-        admin.refreshToken = refreshToken;
-        await admin.save({ validateBeforeSave: false });
-        // 4
-        return { accessToken, refreshToken }
-        
-    } catch (error) {
-        adminDebug(error.message);
-        throw new AppError(500, "An error occurred while generating tokens");
-    } 
+    return { manager, products, messages };
 }
