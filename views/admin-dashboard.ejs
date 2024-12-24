@@ -74,10 +74,104 @@
                     </div>
                 <% } %>
             </div>
+
+            <!-- Messages Section -->
+            <% if (user.role != 'owner') { %>
+                <div class="bg-white shadow rounded-lg p-6 mt-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Messages from Owner</h2>
+                    </div>
+
+                    <% if (messages.length > 0) { %>
+                        <div class="space-y-4">
+                            <% messages.forEach(message => { %>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-start">
+                                    <div>
+                                        <p class="text-gray-800"><strong>Message:</strong> <%= message.message %></p>
+                                        <% if (message.productId) { %>
+                                            <p class="text-gray-600 text-sm"><strong>Product:</strong> <%= message.productId.name %></p>
+                                        <% } %>
+                                        <p class="text-gray-600 text-sm"><strong>Status:</strong> <%= message.status %></p>
+                                    </div>
+                                    <% if (message.status === "unresolved") { %>
+                                        <div class="flex gap-4">
+                                            <button onclick="updateMessageStatus('<%= message._id %>', 'resolved')" 
+                                                    class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700">
+                                                Resolve
+                                            </button>
+                                            <button onclick="updateMessageStatus('<%= message._id %>', 'rejected')" 
+                                                    class="px-4 py-2 bg-red-600 text-white rounded-md shadow hover:bg-red-700">
+                                                Reject
+                                            </button>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="flex flex-col items-center justify-center p-8">
+                            <i class="ri-mail-line text-4xl text-gray-400 mb-6"></i>
+                            <p class="text-center text-gray-600">No messages available.</p>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <!-- Sent Messages Section (for Owner) -->
+            <% if (user.role === 'owner') { %>
+                <div class="bg-white shadow rounded-lg p-6 mt-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Messages Sent by You</h2>
+                    </div>
+
+                    <% if (sentMessages.length > 0) { %>
+                        <div class="space-y-4">
+                            <% sentMessages.forEach(message => { %>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-start">
+                                    <div>
+                                        <p class="text-gray-800"><strong>Message:</strong> <%= message.message %></p>
+                                        <% if (message.productId) { %>
+                                            <p class="text-gray-600 text-sm"><strong>Product:</strong> <%= message.productId.name %></p>
+                                        <% } %>
+                                        <p class="text-gray-600 text-sm"><strong>Manager:</strong> <%= message.recipient.fullName %></p>
+                                        <p class="text-gray-600 text-sm"><strong>Status:</strong> <%= message.status %></p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="flex flex-col items-center justify-center p-8">
+                            <i class="ri-mail-line text-4xl text-gray-400 mb-6"></i>
+                            <p class="text-center text-gray-600">You haven't sent any messages yet.</p>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>
 
+<script>
+    async function updateMessageStatus(messageId, status) {
+        try {
+            const response = await fetch(`/app/admin/message/update/${messageId}`, {
+                method: 'PUT',
+                body: JSON.stringify({ status }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
+            if (response.ok) {
+                // Reload the page or update the message status in the UI
+                window.location.reload();
+            } else {
+                alert("Error updating message status");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+</script>
 
 <%- include('./partials/footer') %>

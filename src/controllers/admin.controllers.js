@@ -172,7 +172,15 @@ const renderAdminDashboard = asyncHandler(async (req, res, next) => {
     adminDebug('Rendering Admin Dashboard');
     const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
     const products = await Product.find({ createdBy: admin._id });
-    res.render('admin-dashboard', {user: admin, products: products});
+    const { messages } = await getManagerData(admin._id);
+
+    let sentMessages = [];
+    if(admin.role === 'owner') {
+        sentMessages = await Message.find({ sender: admin._id })
+        .populate('recipient', 'fullName').populate("productId", "name")
+        .sort({ createdAt: -1 });
+    }
+    res.render('admin-dashboard', {user: admin, products: products, messages: messages, sentMessages: sentMessages});
 });
 
 const logoutAdmin = asyncHandler(async (req, res, next) => {
