@@ -4,6 +4,7 @@ import {uploadToCloudinary} from '../utils/Cloudinary.js';
 import { asyncHandler } from '../utils/AsyncHandler.js';
 import AppError from '../utils/AppError.js';
 import Product from '../models/product.models.js';
+import Message from '../models/message.models.js';
 
 const adminDebug = debug("app:controller:admin");
 
@@ -252,7 +253,43 @@ const renderAllProducts = asyncHandler(async (req, res, next) => {
     res.render('admin-all-products', { user: admin, products });
 });
 
-export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin, renderAllProducts };
+const renderAllManagers = asyncHandler(async (req, res, next) => {
+    adminDebug('Rendering All Managers');
+    const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
+    const managers = await Admin.find({ role: 'manager' });
+    res.render('admin-all-managers', { user: admin, managers });
+});
+
+const getManagerData = asyncHandler(async (req, res, next) => {
+    const { managerId } = req.params;
+
+    adminDebug('Getting Manager Data');
+    const manager = await Admin.findById(managerId).select("-password -refreshToken");
+    if (!manager) {
+        adminDebug('Manager not found');
+        req.flash('error_msg', 'Manager not found');
+        return res.status(404).redirect('/app/admin/all-managers');
+    }
+    adminDebug('Manager found');
+
+    adminDebug('Getting Manager Products');
+    const products = await Product.find({ createdBy: managerId });
+    if (!products) {
+        adminDebug('No products found');
+        req.flash('error_msg', 'No products found');
+    }
+
+    adminDebug('Getting Manager Messages');
+    const messages = await Message.find({ recipient: managerId }).populate('productId', 'name').sort({ createdAt: -1 });
+    if (!messages) {
+        adminDebug('No messages found');
+        req.flash('error_msg', 'No messages found');
+    }
+
+    return res.json({ products, messages });
+});
+
+export { createAdmin, loginAdmin, renderAdminDashboard, renderManagerApproval, managerApproval, managerDenial, renderAdminCreate, renderAdminLogin, logoutAdmin, renderAllProducts, renderAllManagers, getManagerData };
 
 async function generateTokens(adminId) {
 
