@@ -1,0 +1,182 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen pt-28 pb-10 bg-gray-50 px-8">
+    <!-- Page Title -->
+    <div class="mb-8 flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-800">All Managers</h1>
+    </div>
+
+    <!-- Managers Table -->
+    <% if (managers.length > 0) { %>
+        <div class="overflow-x-auto bg-white shadow rounded-lg">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 text-left text-gray-700">
+                        <th class="px-6 py-3 text-sm font-medium">Avatar</th>
+                        <th class="px-6 py-3 text-sm font-medium">Name</th>
+                        <th class="px-6 py-3 text-sm font-medium">Email</th>
+                        <th class="px-6 py-3 text-sm font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% managers.forEach(manager => { %>
+                        <tr class="border-b">
+                            <!-- Manager Avatar -->
+                            <td class="px-6 py-4">
+                                <img src="<%= manager.avatar %>" alt="<%= manager.name %>" class="w-12 h-12 rounded-full object-cover">
+                            </td>
+
+                            <!-- Manager Name -->
+                            <td class="px-6 py-4">
+                                <span class="text-gray-800 font-semibold"><%= manager.fullName %></span>
+                            </td>
+
+                            <!-- Manager Email -->
+                            <td class="px-6 py-4">
+                                <span class="text-gray-600"><%= manager.email %></span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 flex gap-4">
+                                <!-- Send Message -->
+                                <button onclick="openMessageModal('<%= manager._id %>')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="ri-chat-1-line text-xl"></i>
+                                </button>
+
+                                <!-- Delete Manager -->
+                                <button onclick="openDeleteModal('<%= manager._id %>')" class="text-red-600 hover:text-red-800">
+                                    <i class="ri-delete-bin-line text-xl"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="flex flex-col items-center justify-center mt-16">
+            <img src="/images/empty.svg" alt="No Managers" class="w-48 mb-6">
+            <p class="text-center text-gray-600">No managers available.</p>
+        </div>
+    <% } %>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h3 class="text-lg font-semibold mb-4">Are you sure you want to delete this manager?</h3>
+        <form id="deleteForm" method="POST">
+            <div class="flex justify-center gap-4">
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+                <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Message Modal -->
+<div id="messageModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full h-auto overflow-hidden">
+        <h3 class="text-lg font-semibold mb-4">Send a message to this manager</h3>
+
+        <!-- Previous Messages -->
+        <div id="previousMessages" class="mb-4 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3 bg-gray-50">
+            <!-- Dynamically populate previous messages -->
+        </div>
+
+        <!-- Message Form -->
+        <form id="messageForm" method="POST" action="/app/message/send-message">
+
+            <!-- Manager ID -->
+            <div class="mb-4">
+                <label for="productId" class="block text-sm font-medium text-gray-700">Manager ID</label>
+                <input class="w-full border border-gray-300 rounded-md p-2" name="managerId" id="managerId" readonly>
+            </div>
+
+            <!-- Product Dropdown -->
+            <div class="mb-4">
+                <label for="productId" class="block text-sm font-medium text-gray-700">Product</label>
+                <select id="productId" name="productId" class="w-full border border-gray-300 rounded-md p-2">
+                    <!-- Default option for No Products -->
+                    <option value="undefined">No Products</option>
+                    <!-- Dynamically populate products -->
+                </select>
+            </div>
+
+            <!-- Message Textarea -->
+            <div class="mb-4">
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea id="message" name="message" class="w-full border border-gray-300 rounded-md p-2"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-4">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Send</button>
+                <button type="button" onclick="closeMessageModal()" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let deleteFormManager = document.getElementById('deleteForm');
+    let messageForm = document.getElementById('messageForm');
+    let managerIdInput = document.getElementById('managerId');
+
+    function openDeleteModal(managerId) {
+        deleteFormManager.action = `/app/admin/delete-manager/${managerId}`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    async function openMessageModal(managerId) {
+        managerIdInput.value = managerId;
+
+        try {
+            const response = await fetch(`/app/admin/manager-data/${managerId}`);
+            const data = await response.json();
+            
+            // Populate manager ID
+            const managerIdElement = document.getElementById("managerId");
+            managerIdElement.value = managerId;
+
+            // Populate products dropdown
+            const productDropdown = document.getElementById("productId");
+            productDropdown.innerHTML = `<option value="${undefined}">No Product</option>` +  data.products
+                .map(
+                    (product) =>
+                        `<option value="${product._id}">${product.name} (ID: ${product._id})</option>`
+                )
+                .join("");
+
+            // Populate previous messages
+            const previousMessages = document.getElementById("previousMessages");
+            previousMessages.innerHTML = data.messages
+                .map(
+                    (msg) =>
+                        `<div class="p-2 mb-2 bg-white shadow rounded-md">
+                            <p class="text-gray-800"><strong>Message:</strong> ${msg.message}</p>
+                            <p class="text-gray-500 text-sm"><strong>Status:</strong> ${msg.status}</p>
+                            ${
+                                msg.productId
+                                    ? `<p class="text-gray-500 text-sm"><strong>Product:</strong> ${msg.productId.name}</p>`
+                                    : ""
+                            }
+                        </div>`
+                )
+                .join("");
+        } catch (err) {
+            console.error(err);
+        }
+
+        document.getElementById("messageModal").classList.remove("hidden");
+    }
+
+    function closeMessageModal() {
+        document.getElementById('messageModal').classList.add('hidden');
+    }
+</script>
+
+<%- include('./partials/footer') %>
