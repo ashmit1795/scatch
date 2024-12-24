@@ -42,7 +42,11 @@
 
                             <!-- Product Creator -->
                             <td class="px-6 py-4">
-                                <span class="text-gray-600"><%= product.createdBy.fullName || 'Unknown' %></span>
+                                <% if(product.createdBy._id.toString() === user._id.toString()){ %>
+                                    <span class="text-gray-600">By You</span>
+                                <% } else { %>
+                                    <span class="text-gray-600"><%= product.createdBy.fullName || 'Unknown' %></span>
+                                <% } %>
                             </td>
 
                             <!-- Actions -->
@@ -60,7 +64,7 @@
                                         </button>
                                     </form>
                                 <% } else { %>
-                                    <span class="text-gray-400">No Actions</span>
+                                    <span class="py-4 text-gray-400">No Actions</span>
                                 <% } %>
 
                             </td>
