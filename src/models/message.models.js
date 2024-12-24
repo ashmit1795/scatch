@@ -24,7 +24,7 @@ const messageSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['unresolved', 'resolved'],
+        enum: ['unresolved', 'resolved', 'rejected'],
         default: 'unresolved',
     },
 }, { 
