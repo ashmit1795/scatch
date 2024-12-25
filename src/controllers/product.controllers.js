@@ -68,7 +68,6 @@ const renderEditProduct = async (req, res, next) => {
     productDebug('Rendering Edit Product');
     const productId = req.params.productId;
     const product = await Product.findById(productId);
-    productDebug(product.categories);
     const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
     res.render('edit-product', { user: admin, product });
 };
@@ -97,16 +96,11 @@ const editProduct = asyncHandler(async (req, res, next) => {
         ? [selectedCategories]
         : [];
 
-        productDebug("selectedCategoriesArray:",selectedCategoriesArray);
-        productDebug("newCategories:", newCategories);
     // Merge categories
     const allCategories = [
         ...selectedCategoriesArray,
         ...(newCategories) ? newCategories.filter((cat) => cat.trim()) : [],
     ];
-
-    productDebug('All Categories:', allCategories);
-    
 
     // Handle image upload
     let imageUrl = product.image; // Use existing image by default
