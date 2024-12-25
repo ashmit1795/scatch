@@ -60,7 +60,7 @@
                                         <a href="/app/product/edit/<%= product._id %>" class="text-blue-600 hover:text-blue-800">
                                             <i class="ri-edit-line text-xl"></i>
                                         </a>
-                                        <button onclick="openDeleteModal('<%= product._id %>?redirect=/app/admin/dashboard')" class="text-red-600 hover:text-red-800">
+                                        <button data-product-id="<%= product._id %>?redirect=/app/admin/dashboard" class="delete-product-btn text-red-600 hover:text-red-800">
                                             <i class="ri-delete-bin-line text-xl"></i>
                                         </button>
                                     </div>

@@ -67,8 +67,8 @@
                                     </a>
 
                                     <!-- Delete Button -->
-                                    <button onclick="openDeleteModal('<%= product._id %>')" 
-                                        class="text-red-600 hover:text-red-800 flex items-center gap-1">
+                                    <button data-product-id="<%= product._id %>?redirect=/app/admin/all-products" 
+                                        class="delete-product-btn text-red-600 hover:text-red-800 flex items-center gap-1">
                                         <i class="ri-delete-bin-line text-xl"></i> Delete
                                     </button>
                                 <% } else { %>
