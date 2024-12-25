@@ -36,6 +36,10 @@ const productSchema = new Schema({
         type: String,
         default: "#ffffff"
     },
+    rating: {
+        type: Number,
+        default: 0
+    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: "Admin",
