@@ -1,36 +1,45 @@
 <%- include('./partials/header') %>
 
-<div class="flex flex-col items-center justify-center w-full h-screen bg-gray-100">
-    <!-- Error Code Display -->
-    <div class="text-center">
-        <h1 class="text-6xl font-bold text-red-500">
+<div class="flex flex-col items-center justify-center w-full h-screen bg-gradient-to-br from-gray-100 to-blue-50">
+    <!-- Error Icon and Code -->
+    <div class="text-center space-y-4">
+        <i class="ri-error-warning-line text-9xl text-red-500"></i> <!-- Error Icon -->
+        <h1 class="text-6xl font-extrabold text-red-600">
             <%= status || 'Error' %>
         </h1>
-        <p class="text-2xl mt-2 text-gray-700">
+        <p class="text-2xl font-medium text-gray-800">
             <%= message || 'Something went wrong' %>
         </p>
     </div>
 
     <!-- Error Description and Suggestions -->
-    <div class="mt-4 text-center">
+    <div class="mt-6 text-center space-y-2">
         <% if (status && String(status).startsWith('4')) { %>
             <p class="text-lg text-gray-600">
-                Oops! It looks like the page you're looking for doesn’t exist or you don't have permission to view it.
+                Oops! The page you're looking for doesn’t exist or you don’t have permission to view it.
             </p>
         <% } else if (status && String(status).startsWith('5')) { %>
             <p class="text-lg text-gray-600">
-                Sorry! Something went wrong on our end. We're working on fixing this issue.
+                Sorry! Something went wrong on our end. We're already working to fix this issue.
+            </p>
+        <% } else { %>
+            <p class="text-lg text-gray-600">
+                Something unexpected happened. Please try again or contact support if the problem persists.
             </p>
         <% } %>
     </div>
 
-    <!-- Navigation Options -->
-    <div class="mt-6 flex gap-4">
-        <a href="/" class="px-6 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600">
-            Go Home
+    <!-- Navigation Buttons -->
+    <div class="mt-8 flex gap-6">
+        <a 
+            href="/" 
+            class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 hover:shadow-lg transition">
+            <i class="ri-home-line"></i> Go Home
         </a>
-        <button onclick="history.back()" class="px-6 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400">
-            Go Back
+        <button 
+            onclick="history.back()" 
+            class="px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-md shadow-md hover:bg-gray-400 hover:shadow-lg transition">
+            <i class="ri-arrow-left-line"></i> Go Back
         </button>
     </div>
 </div>

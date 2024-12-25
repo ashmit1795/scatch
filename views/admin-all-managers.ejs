@@ -3,15 +3,17 @@
 <div class="min-h-screen pt-28 pb-10 bg-gray-50 px-8">
     <!-- Page Title -->
     <div class="mb-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-800">All Managers</h1>
+        <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="ri-team-line text-blue-600"></i> All Managers
+        </h1>
     </div>
 
     <!-- Managers Table -->
     <% if (managers.length > 0) { %>
-        <div class="overflow-x-auto bg-white shadow rounded-lg">
+        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
             <table class="w-full border-collapse">
                 <thead>
-                    <tr class="bg-gray-100 text-left text-gray-700">
+                    <tr class="bg-gradient-to-r from-blue-500 to-indigo-600 text-left text-white">
                         <th class="px-6 py-3 text-sm font-medium">Avatar</th>
                         <th class="px-6 py-3 text-sm font-medium">Name</th>
                         <th class="px-6 py-3 text-sm font-medium">Email</th>
@@ -20,7 +22,7 @@
                 </thead>
                 <tbody>
                     <% managers.forEach(manager => { %>
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-100 transition">
                             <!-- Manager Avatar -->
                             <td class="px-6 py-4">
                                 <img src="<%= manager.avatar %>" alt="<%= manager.name %>" class="w-12 h-12 rounded-full object-cover">
@@ -37,15 +39,17 @@
                             </td>
 
                             <!-- Actions -->
-                            <td class="px-6 py-4 flex gap-4">
+                            <td class="px-6 py-4 flex gap-6">
                                 <!-- Send Message -->
-                                <button onclick="openMessageModal('<%= manager._id %>')" class="text-blue-600 hover:text-blue-800">
-                                    <i class="ri-chat-1-line text-xl"></i>
+                                <button onclick="openMessageModal('<%= manager._id %>')" 
+                                    class="flex items-center gap-2 text-blue-600 hover:text-blue-800">
+                                    <i class="ri-chat-1-line text-xl"></i> Message
                                 </button>
 
                                 <!-- Delete Manager -->
-                                <button onclick="openDeleteModal('<%= manager._id %>')" class="text-red-600 hover:text-red-800">
-                                    <i class="ri-delete-bin-line text-xl"></i>
+                                <button onclick="openDeleteModal('<%= manager._id %>')" 
+                                    class="flex items-center gap-2 text-red-600 hover:text-red-800">
+                                    <i class="ri-delete-bin-line text-xl"></i> Delete
                                 </button>
                             </td>
                         </tr>
@@ -56,7 +60,11 @@
     <% } else { %>
         <div class="flex flex-col items-center justify-center mt-16">
             <img src="/images/empty.svg" alt="No Managers" class="w-48 mb-6">
-            <p class="text-center text-gray-600">No managers available.</p>
+            <p class="text-center text-gray-600 text-lg font-medium">No managers available.</p>
+            <a href="/app/admin/add-manager" 
+                class="mt-6 px-6 py-3 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 transition">
+                Add New Manager
+            </a>
         </div>
     <% } %>
 </div>
@@ -76,8 +84,10 @@
 
 <!-- Message Modal -->
 <div id="messageModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full h-auto overflow-hidden">
-        <h3 class="text-lg font-semibold mb-4">Send a message to this manager</h3>
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full h-auto">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <i class="ri-chat-3-line text-blue-600"></i> Send a message to this manager
+        </h3>
 
         <!-- Previous Messages -->
         <div id="previousMessages" class="mb-4 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3 bg-gray-50">
@@ -86,20 +96,13 @@
 
         <!-- Message Form -->
         <form id="messageForm" method="POST" action="/app/message/send-message">
-
-            <!-- Manager ID -->
-            <div class="mb-4">
-                <label for="productId" class="block text-sm font-medium text-gray-700">Manager ID</label>
-                <input class="w-full border border-gray-300 rounded-md p-2" name="managerId" id="managerId" readonly>
-            </div>
+            <input type="hidden" name="managerId" id="managerId">
 
             <!-- Product Dropdown -->
             <div class="mb-4">
                 <label for="productId" class="block text-sm font-medium text-gray-700">Product</label>
                 <select id="productId" name="productId" class="w-full border border-gray-300 rounded-md p-2">
-                    <!-- Default option for No Products -->
                     <option value="undefined">No Products</option>
-                    <!-- Dynamically populate products -->
                 </select>
             </div>
 
