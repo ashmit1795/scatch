@@ -14,8 +14,22 @@ const renderCreateProduct = asyncHandler(async (req, res, next) => {
 
 const createProduct = asyncHandler(async (req, res, next) => {
     productDebug('Creating Product');
-    const { name, description, price, category, stock, discount, bgColor } = req.body;
+    const { name, description, price, selectedCategories, newCategories, stock, discount, bgColor } = req.body;
     const imageLocalPath = req.file.path;
+
+   // Ensure selectedCategories is always an array
+    const selectedCategoriesArray = Array.isArray(selectedCategories)
+    ? selectedCategories
+    : selectedCategories
+    ? [selectedCategories]
+    : [];
+
+    // Merge existing and new categories
+    const allCategories = [
+    ...selectedCategoriesArray, // Existing categories
+    ...(newCategories ? newCategories.filter(cat => cat.trim()) : []), // New categories (non-empty)
+    ];
+
 
     // Upload image to Cloudinary
     const imageUploadResponse = await uploadToCloudinary(imageLocalPath, 'product');
@@ -31,7 +45,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
         name,
         description,
         price,
-        category,
+        categories: allCategories,
         stock,
         discount,
         bgColor,
@@ -54,6 +68,7 @@ const renderEditProduct = async (req, res, next) => {
     productDebug('Rendering Edit Product');
     const productId = req.params.productId;
     const product = await Product.findById(productId);
+    productDebug(product.categories);
     const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
     res.render('edit-product', { user: admin, product });
 };
@@ -62,43 +77,76 @@ const editProduct = asyncHandler(async (req, res, next) => {
     productDebug('Editing Product');
     const productId = req.params.productId;
     const product = await Product.findById(productId);
-    if(!product){
+
+    if (!product) {
         productDebug('Product not found');
         req.flash('error_msg', 'Product not found');
         return res.status(404).redirect('/app/product/create');
     }
+
     productDebug('Product found');
-    const { name, description, price, category, stock, discount, bgColor } = req.body;
-    if(req.file){
+
+    // Destructure fields from request body
+    const { name, description, price, stock, discount, bgColor, selectedCategories, newCategories } = req.body;
+
+   
+    // Ensure selectedCategories is always treated as an array
+    const selectedCategoriesArray = Array.isArray(selectedCategories)
+        ? selectedCategories
+        : selectedCategories
+        ? [selectedCategories]
+        : [];
+
+        productDebug("selectedCategoriesArray:",selectedCategoriesArray);
+        productDebug("newCategories:", newCategories);
+    // Merge categories
+    const allCategories = [
+        ...selectedCategoriesArray,
+        ...(newCategories) ? newCategories.filter((cat) => cat.trim()) : [],
+    ];
+
+    productDebug('All Categories:', allCategories);
+    
+
+    // Handle image upload
+    let imageUrl = product.image; // Use existing image by default
+    if (req.file) {
         const imageLocalPath = req.file.path;
+
         // Upload image to Cloudinary
         const imageUploadResponse = await uploadToCloudinary(imageLocalPath, 'product');
-        if(!imageUploadResponse.url){
+        if (!imageUploadResponse.url) {
             productDebug('Image upload failed');
             req.flash('error_msg', 'Image upload failed');
             return res.status(500).redirect(`/app/product/edit/${productId}`);
         }
+
         productDebug('Image uploaded to Cloudinary');
+        imageUrl = imageUploadResponse.url; // Update with new image URL
     }
+
+    // Update the product
     const updatedProduct = await Product.findByIdAndUpdate(
         product._id,
         {
             name,
             description,
             price,
-            category,
+            categories: allCategories, // Use merged categories
             stock,
             discount,
             bgColor,
-            image: req.file ? imageUploadResponse.url : product.image
+            image: imageUrl,
         },
         { new: true }
     );
-    if(!updatedProduct){
+
+    if (!updatedProduct) {
         productDebug('Error updating product');
         req.flash('error_msg', 'Error updating product');
         return res.status(500).redirect(`/app/product/edit/${productId}`);
     }
+
     productDebug('Product updated successfully');
     req.flash('success_msg', 'Product updated successfully');
     return res.status(200).redirect(`/app/product/edit/${updatedProduct._id}`);

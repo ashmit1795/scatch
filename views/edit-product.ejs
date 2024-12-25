@@ -10,26 +10,19 @@
             <p class="text-gray-600 text-lg">Make changes to the product details below and save your updates.</p>
         </div>
 
-        <!-- Form -->
+        <!-- Edit Product Form -->
         <form id="editProductForm" action="/app/product/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-6 mt-8">
             <!-- Product Name -->
             <div>
                 <label class="text-gray-700 font-medium block mb-2">Product Name</label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    value="<%= product.name %>" 
-                    required 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
+                <input type="text" name="name" value="<%= product.name %>" required 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
 
             <!-- Description -->
             <div>
                 <label class="text-gray-700 font-medium block mb-2">Description</label>
-                <textarea 
-                    name="description" 
-                    required 
+                <textarea name="description" required 
                     class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 ><%= product.description %></textarea>
             </div>
@@ -38,46 +31,56 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="w-full">
                     <label class="text-gray-700 font-medium block mb-2">Price (₹)</label>
-                    <input 
-                        type="number" 
-                        name="price" 
-                        value="<%= product.price %>" 
-                        required 
+                    <input type="number" name="price" value="<%= product.price %>" required 
                         class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     >
                 </div>
                 <div class="w-full">
                     <label class="text-gray-700 font-medium block mb-2">Stock</label>
-                    <input 
-                        type="number" 
-                        name="stock" 
-                        value="<%= product.stock %>" 
-                        required 
+                    <input type="number" name="stock" value="<%= product.stock %>" required 
                         class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     >
                 </div>
             </div>
 
-            <!-- Category -->
+            <!-- Categories -->
             <div>
-                <label class="text-gray-700 font-medium block mb-2">Category</label>
-                <input 
-                    type="text" 
-                    name="category" 
-                    value="<%= product.category %>" 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
+                <label class="text-gray-700 font-medium block mb-2">Categories</label>
+                <% 
+                    // Merge default categories with product categories and deduplicate
+                    const defaultCategories = ['Backpack', 'Home', 'Travel', 'Tote Bag'];
+                    const productCategories = Array.isArray(product.categories) ? product.categories : [];
+                    const allCategories = [...new Set([...defaultCategories, ...productCategories])];
+                %>
+                <select name="selectedCategories" multiple 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <% allCategories.forEach((category) => { %>
+                        <option value="<%= category %>" <%= productCategories.includes(category) ? 'selected' : '' %> >
+                            <%= category %>
+                        </option>
+                    <% }); %>
+                </select>
+                <p class="text-sm text-gray-600 mt-2">Hold Ctrl (Windows) or Command (Mac) to select multiple categories.</p>
             </div>
 
+            <!-- Add New Categories -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Add New Categories</label>
+                <div id="new-category-fields" class="space-y-2">
+                    <input type="text" name="newCategories[]" placeholder="Enter new category" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <button type="button" id="add-category-field" 
+                    class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                    Add Another Category
+                </button>
+            </div>
+            
             <!-- Image Upload -->
             <div>
                 <label class="text-gray-700 font-medium block mb-2">Product Image</label>
-                <input 
-                    type="file" 
-                    name="image" 
-                    accept="image/*" 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
+                <input type="file" name="image" accept="image/*" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                 <% if (product.image) { %>
                     <img 
                         src="<%= product.image %>" 
@@ -91,31 +94,20 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="w-full">
                     <label class="text-gray-700 font-medium block mb-2">Discount (%)</label>
-                    <input 
-                        type="number" 
-                        name="discount" 
-                        value="<%= product.discount %>" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    >
+                    <input type="number" name="discount" value="<%= product.discount %>" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                 </div>
                 <div class="w-full">
                     <label class="text-gray-700 font-medium block mb-2">Background Color</label>
-                    <input 
-                        type="color" 
-                        name="bgColor" 
-                        value="<%= product.bgColor %>" 
-                        class="w-full h-10 rounded-md border border-gray-300"
-                    >
+                    <input type="color" name="bgColor" value="<%= product.bgColor %>" class="w-full h-10 rounded-md border border-gray-300">
                 </div>
             </div>
 
             <!-- Submit Button -->
             <div class="flex justify-center mt-8">
-                <button 
-                    type="button" 
+                <button type="button" 
                     onclick="openModal()" 
-                    class="w-full md:w-1/3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-md font-semibold hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition duration-150"
-                >
+                    class="w-full md:w-1/3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-md font-semibold hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition duration-150">
                     <i class="ri-save-line"></i> Save Changes
                 </button>
             </div>
@@ -131,16 +123,12 @@
         </h3>
         <p class="text-gray-700 mb-6">Are you sure you want to save these changes?</p>
         <div class="flex justify-center gap-4">
-            <button 
-                onclick="submitForm()" 
-                class="bg-green-500 text-white px-6 py-2 rounded-md font-medium hover:bg-green-600 transition duration-150"
-            >
+            <button onclick="submitForm()" 
+                class="bg-green-500 text-white px-6 py-2 rounded-md font-medium hover:bg-green-600 transition duration-150">
                 Yes, Save
             </button>
-            <button 
-                onclick="closeModal()" 
-                class="bg-red-500 text-white px-6 py-2 rounded-md font-medium hover:bg-red-600 transition duration-150"
-            >
+            <button onclick="closeModal()" 
+                class="bg-red-500 text-white px-6 py-2 rounded-md font-medium hover:bg-red-600 transition duration-150">
                 Cancel
             </button>
         </div>

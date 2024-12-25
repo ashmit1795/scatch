@@ -41,11 +41,30 @@
                 </div>
             </div>
     
-            <!-- Category -->
+            <!-- Existing Categories -->
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Category</label>
-                <input type="text" name="category" placeholder="Enter category" 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <label class="block text-gray-700 font-medium mb-2">Select Existing Categories</label>
+                <select name="selectedCategories" multiple 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <option value="Backpack">Backpack</option>
+                    <option value="Home">Home</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Tote Bag">Tote Bag</option>
+                </select>
+                <p class="text-sm text-gray-600 mt-2">Hold down Ctrl (Windows) or Command (Mac) to select multiple categories.</p>
+            </div>
+    
+            <!-- Add New Categories -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Add New Categories</label>
+                <div id="new-category-fields" class="space-y-2">
+                    <input type="text" name="newCategories[]" placeholder="Enter new category" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <button type="button" id="add-category-field" 
+                    class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                    Add Another Category
+                </button>
             </div>
     
             <!-- Image Upload -->

@@ -16,10 +16,12 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    category: {
-        type: String,
-        default: "Others"
-    },
+    categories: [
+        {
+            type: String,
+            required: true
+        }
+    ],
     image: {
         type: String,
         required: true
