@@ -27,7 +27,7 @@ router.route('/manager-data/:managerId').get(authenticateUser, authorizeUser('ow
 
 if(process.env.NODE_ENV === 'development'){
     router.get('/error', (req, res) => {
-        res.render('error', { message: 'Unauthorized', status: 401 });
+        res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
     });
 }
 
