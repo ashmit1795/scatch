@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import Product from "../models/product.models.js";
 import { uploadToCloudinary, deleteFileFromCloudinary } from "../utils/Cloudinary.js";
 import Admin from '../models/admin.models.js';
+import Message from '../models/message.models.js';
 
 const productDebug = debug("app:controller:product");
 
@@ -164,6 +165,13 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
     // Delete image from Cloudinary
     await deleteFileFromCloudinary(product.image);
     productDebug('Image deleted from Cloudinary');
+
+    const messages = await Message.find({ productId: productId }).select('_id');
+    productDebug('Messages found');
+    if (messages.length > 0) {
+        // Delete all messages related to the product
+        await Message.deleteMany({ productId: productId });
+    }
     
     const deletedProduct = await Product.findByIdAndDelete(productId);
     if (!deletedProduct) {
