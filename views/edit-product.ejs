@@ -48,9 +48,8 @@
                 <label class="text-gray-700 font-medium block mb-2">Categories</label>
                 <% 
                     // Merge default categories with product categories and deduplicate
-                    const defaultCategories = ['Backpack', 'Home', 'Travel', 'Tote Bag'];
                     const productCategories = Array.isArray(product.categories) ? product.categories : [];
-                    const allCategories = [...new Set([...defaultCategories, ...productCategories])];
+                    const allCategories = [...new Set([...categories, ...productCategories])];
                 %>
                 <select name="selectedCategories" multiple 
                     class="w-full px-4 py-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">

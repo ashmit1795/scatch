@@ -9,7 +9,8 @@ const productDebug = debug("app:controller:product");
 const renderCreateProduct = asyncHandler(async (req, res, next) => {
     productDebug('Rendering Create Product');
     const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
-    res.render('create-product', { user: admin });
+    const categories = await getAllCategories();
+    res.render('create-product', { user: admin, categories });
 });
 
 const createProduct = asyncHandler(async (req, res, next) => {
@@ -69,7 +70,8 @@ const renderEditProduct = async (req, res, next) => {
     const productId = req.params.productId;
     const product = await Product.findById(productId);
     const admin = await Admin.findById(req.user._id).select("-password -refreshToken");
-    res.render('edit-product', { user: admin, product });
+    const categories = await getAllCategories();
+    res.render('edit-product', { user: admin, product, categories });
 };
 
 const editProduct = asyncHandler(async (req, res, next) => {
@@ -177,3 +179,9 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
 
 
 export { renderCreateProduct, createProduct, renderEditProduct, editProduct, deleteProduct };
+
+const getAllCategories =async (req, res, next) => {
+    const categories = await Product.find().distinct('categories');
+
+    return [...new Set(categories)];
+};

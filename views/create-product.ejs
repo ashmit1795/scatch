@@ -44,12 +44,15 @@
             <!-- Existing Categories -->
             <div>
                 <label class="block text-gray-700 font-medium mb-2">Select Existing Categories</label>
-                <select name="selectedCategories" multiple 
+                <select id="select-categories" name="selectedCategories" multiple 
                     class="w-full px-4 py-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                    <option value="Backpack">Backpack</option>
+                    <% categories.forEach((category) => { %>
+                        <option value="<%= category %>" ><%= category %></option>
+                    <% }) %>
+                    <!-- <option value="Backpack">Backpack</option>
                     <option value="Home">Home</option>
                     <option value="Travel">Travel</option>
-                    <option value="Tote Bag">Tote Bag</option>
+                    <option value="Tote Bag">Tote Bag</option> -->
                 </select>
                 <p class="text-sm text-gray-600 mt-2">Hold down Ctrl (Windows) or Command (Mac) to select multiple categories.</p>
             </div>
