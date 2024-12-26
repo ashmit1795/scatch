@@ -11,6 +11,69 @@
     </div>
 </div>
 
+<!-- Product Details Modal -->
+<div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl shadow-xl w-full max-w-lg relative p-6 max-h-[80vh] overflow-y-auto">
+        <!-- Close Button -->
+        <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+            <i class="ri-close-line text-3xl"></i>
+        </button>
+
+        <!-- Product Details -->
+        <div class="flex flex-col gap-6">
+            <!-- Product Image -->
+            <div class="flex justify-center">
+                <img id="modalImage" src="" alt="Product Image" class="h-40 w-40 object-contain rounded-lg shadow-lg border border-gray-300">
+            </div>
+
+            <!-- Product Name -->
+            <h2 id="modalName" class="text-2xl font-extrabold text-gray-800 text-center">
+                Product Name
+            </h2>
+
+            <!-- Product Description -->
+            <p id="modalDescription" class="text-gray-600 text-center">
+                Detailed description of the product will appear here.
+            </p>
+
+            <!-- Product Info -->
+            <div class="flex justify-between items-center text-gray-700 text-lg font-medium border-t border-gray-200 pt-4">
+                <div class="flex items-center gap-2">
+                    <i class="ri-price-tag-3-line text-blue-500"></i>
+                    <span>Price:</span> 
+                    <span class="text-gray-900 font-bold">₹<span id="modalPrice"></span></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="ri-store-3-line text-green-500"></i>
+                    <span>Stock:</span> 
+                    <span class="text-gray-900 font-bold"><span id="modalStock"></span></span>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="flex justify-between items-center text-gray-700 text-lg font-medium border-t border-gray-200 pt-4">
+                <div class="flex items-center gap-2">
+                    <i class="ri-percent-line text-orange-500"></i>
+                    <span>Discount:</span> 
+                    <span class="text-gray-900 font-bold"><span id="modalDiscount"></span>%</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-center gap-4 mt-6">
+                <a id="modalEditLink" href="#" 
+                    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
+                    <i class="ri-edit-line"></i> Edit
+                </a>
+                <a id="modalDeleteLink" href="#" 
+                    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300">
+                    <i class="ri-delete-bin-line"></i> Delete
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Javascript  -->
 <script src="/javascripts/flashMessages.js" defer></script>
 <script src="/javascripts/togglePasswordVisibility.js" defer></script>

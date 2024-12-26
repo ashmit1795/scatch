@@ -27,7 +27,16 @@
                 </thead>
                 <tbody>
                     <% products.forEach(product => { %>
-                        <tr class="border-b hover:bg-gray-100 transition">
+                        <tr class="border-b hover:bg-gray-100 transition"
+                                data-modal-trigger
+                                data-product-id="<%= product._id %>" 
+                                data-product-image="<%= product.image %>" 
+                                data-product-name="<%= product.name %>" 
+                                data-product-description="<%= product.description %>" 
+                                data-product-price="<%= product.price %>" 
+                                data-product-stock="<%= product.stock %>" 
+                                data-product-discount="<%= product.discount %>"
+                        >
                             <!-- Product ID -->
                             <td class="px-6 py-4">
                                 <span class="text-gray-600 font-mono text-sm"><%= product._id %></span>
