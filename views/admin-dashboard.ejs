@@ -79,7 +79,6 @@
                 <% } %>
             </div>
 
-            
             <!-- Messages Section -->
             <% if (user.role !== 'owner') { %>
                 <div class="bg-white shadow-lg rounded-xl p-6 mt-6">
@@ -88,31 +87,34 @@
                             <i class="ri-mail-line text-blue-600"></i> Messages from Owner
                         </h2>
                     </div>
-            
+
                     <% if (messages.length > 0) { %>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <% messages.forEach(message => { %>
                                 <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6">
                                     <div class="flex flex-col gap-3">
+                                        <!-- Message Content -->
                                         <div class="flex items-center gap-2">
                                             <i class="ri-message-3-line text-blue-600 text-xl"></i>
                                             <p class="text-gray-800 font-semibold">Message</p>
                                         </div>
                                         <p class="text-gray-700"><%= message.message %></p>
-            
+
+                                        <!-- Linked Product -->
                                         <% if (message.productId) { %>
                                             <div class="flex items-center gap-2 text-sm text-gray-600">
                                                 <i class="ri-shopping-cart-line text-gray-500"></i>
                                                 <span>
                                                     <strong>Product:</strong> 
                                                     <a href="/app/product/edit/<%= message.productId._id %>" 
-                                                       class="text-blue-600 hover:underline">
+                                                    class="text-blue-600 hover:underline">
                                                         <%= message.productId.name %>
                                                     </a>
                                                 </span>
                                             </div>
                                         <% } %>
-            
+
+                                        <!-- Timestamp -->
                                         <div class="flex items-center gap-2 text-sm">
                                             <i class="ri-time-line text-gray-500"></i>
                                             <span>
@@ -120,7 +122,8 @@
                                                 <%= new Date(message.createdAt).toLocaleString() %>
                                             </span>
                                         </div>
-            
+
+                                        <!-- Message Status -->
                                         <div class="flex items-center gap-2 text-sm">
                                             <i class="ri-information-line text-gray-500"></i>
                                             <span>
@@ -134,6 +137,36 @@
                                                 </span>
                                             </span>
                                         </div>
+
+                                        <!-- Action Buttons -->
+                                        <% if (message.status === 'unresolved') { %>
+                                            <div class="flex gap-4 mt-4">
+                                                <form 
+                                                    action="/app/message/update/<%= message._id %>" 
+                                                    method="POST" 
+                                                    class="inline">
+                                                    <input type="hidden" name="status" value="resolved">
+                                                    <button 
+                                                        type="submit" 
+                                                        class="bg-green-500 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2 hover:bg-green-600 transition">
+                                                        <i class="ri-checkbox-circle-line"></i>
+                                                        Resolve
+                                                    </button>
+                                                </form>
+                                                <form 
+                                                    action="/app/message/update/<%= message._id %>" 
+                                                    method="POST" 
+                                                    class="inline">
+                                                    <input type="hidden" name="status" value="rejected">
+                                                    <button 
+                                                        type="submit" 
+                                                        class="bg-red-500 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2 hover:bg-red-600 transition">
+                                                        <i class="ri-close-circle-line"></i>
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        <% } %>
                                     </div>
                                 </div>
                             <% }) %>
@@ -146,9 +179,6 @@
                     <% } %>
                 </div>
             <% } %>
-            
-
-
 
             <!-- Sent Messages Section (for Owner) -->
             <% if (user.role === 'owner') { %>

@@ -49,14 +49,14 @@ const updateMessageStatus = asyncHandler(async (req, res, next) => {
         req.flash('error_msg', 'Message not found');
         return res.redirect('/app/admin/dashboard');
     }
-    messageDebug('Message found:', message);
-    messageDebug('Updating message status');
+    messageDebug('Message found:');
+    messageDebug(`Updating message status to ${status}`);
     message.status = status;
     await message.save();
 
-    messageDebug('Message status updated');
+    messageDebug(`Message status updated to ${message.status}`);
     req.flash('success_msg', 'Message status updated successfully');
-    return res.json({ success: true, message: "Message status updated successfully" }).redirect('/app/admin/dashboard');
+    return res.redirect('/app/admin/dashboard');
 });
 
 export { sendMessage, updateMessageStatus };
