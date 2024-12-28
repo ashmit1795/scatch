@@ -11,67 +11,86 @@
 
 <body class="bg-gray-100 font-['helvetica_now_display']">
     <!-- Navbar -->
-    <nav class="w-full fixed top-0 left-0 px-6 py-4 bg-white shadow-lg z-50 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            <button id="toggleMenu" class="md:hidden">
-                <i class="ri-menu-line text-3xl text-blue-600"></i>
-            </button>
-            <h3 class="text-3xl font-extrabold text-blue-600 tracking-wide">
-                <a href="/">Scatch</a>
-            </h3>
-        </div>
-        
-        <% if (user) { %>
-            <div class="hidden md:flex gap-8 items-center text-gray-700">
-                <% if (["manager", "owner"].includes(user.role)) { %>
-                    <a href="/app/admin/dashboard" class="hover:text-blue-600 text-lg font-medium">Dashboard</a>
-                    <% if (user.role === "owner") { %>
-                        <a href="/app/admin/manager-approval" class="hover:text-blue-600 text-lg font-medium">Manager Approvals</a>
-                        <a href="/app/admin/all-managers" class="hover:text-blue-600 text-lg font-medium">All Managers</a>
-                    <% } %>
-                    <a href="/app/orders" class="hover:text-blue-600 text-lg font-medium">Orders</a>
-                <% } else { %>
-                    <a href="/app/shop" class="hover:text-blue-600 text-lg font-medium">Shop</a>
-                    <a href="/app/cart" class="hover:text-blue-600 text-lg font-medium">Cart</a>
-                <% } %>
-                <a href="/app/admin/logout" class="hover:text-zinc-200 text-lg font-medium bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition ease-in-out duration-150">Logout</a>
+    <nav class="w-full fixed top-0 left-0 px-6 py-4 bg-white shadow-lg z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center space-x-4">
+                <button id="toggleMenu" class="md:hidden">
+                    <i class="ri-menu-line text-3xl text-blue-600"></i>
+                </button>
+                <h1 class="text-3xl font-extrabold text-blue-600 tracking-wide">
+                    <a href="/app/customer/">Scatch</a>
+                </h1>
             </div>
-        <% } %>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex gap-8 items-center text-gray-700">
+                <% if (user) { %>
+                    <% if (!user.role) { %>
+                        <a href="/app/customer/" class="hover:text-blue-500 font-medium">Shop</a>
+                        <a href="/app/cart/:<%= user._id %>" class="hover:text-blue-500 font-medium">Cart</a>
+                        <a href="/app/customer/logout" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium shadow transition">Logout</a>
+                    <% } else if (["manager", "owner"].includes(user.role)) { %>
+                        <a href="/app/customer/" class="hover:text-blue-500 font-medium">Shop</a>
+                        <a href="/app/admin/dashboard" class="hover:text-blue-500 font-medium">Dashboard</a>
+                        <% if (user.role === "owner") { %>
+                            <a href="/app/admin/manager-approval" class="hover:text-blue-500 font-medium">Manager Approvals</a>
+                            <a href="/app/admin/all-managers" class="hover:text-blue-500 font-medium">All Managers</a>
+                        <% } %>
+                        <a href="/app/orders" class="hover:text-blue-500 font-medium">Orders</a>
+                        <a href="/app/admin/logout" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium shadow transition">Logout</a>
+                    <% } %>
+                <% } else { %>
+                    <a href="/app/customer/" class="hover:text-blue-500 font-medium">Shop</a>
+                    <a href="/app/customer/login" class="hover:text-blue-500 font-medium">Login</a>
+                    <a href="/app/customer/register" class="hover:text-blue-500 font-medium">Sign Up</a>
+                    <a href="/app/admin/" class="hover:text-blue-500 font-medium">Admin Login</a>
+                <% } %>
+            </div>
+        </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <% if (user) { %>
-        <div id="mobileMenu" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 z-40 flex items-start">
-            <div class="bg-white w-4/5 max-w-xs h-full p-6 shadow-xl flex flex-col">
-                <button id="closeMenu" class="mb-6 self-end">
-                    <i class="ri-close-line text-3xl text-gray-600"></i>
-                </button>
-                <nav class="flex flex-col gap-5 text-lg text-gray-800">
-                    <% if (["manager", "owner"].includes(user.role)) { %>
-                        <a href="/app/admin/dashboard" class="hover:text-blue-600">Dashboard</a>
+    <!-- Mobile Navigation -->
+    <div id="mobileMenu" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 z-40 flex items-start">
+        <div class="bg-white w-4/5 max-w-xs h-full p-6 shadow-lg flex flex-col">
+            <button id="closeMenu" class="mb-6 self-end">
+                <i class="ri-close-line text-3xl text-gray-800"></i>
+            </button>
+            <nav class="flex flex-col gap-4 text-lg text-gray-700">
+                <% if (user) { %>
+                    <% if (!user.role) { %>
+                        <a href="/app/customer/" class="hover:text-blue-500">Shop</a>
+                        <a href="/app/cart/:<%= user._id %>" class="hover:text-blue-500">Cart</a>
+                        <a href="/app/customer/logout" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow transition">Logout</a>
+                    <% } else if (["manager", "owner"].includes(user.role)) { %>
+                        <a href="/app/customer/" class="hover:text-blue-500 font-medium">Shop</a>
+                        <a href="/app/admin/dashboard" class="hover:text-blue-500 font-medium">Dashboard</a>
                         <% if (user.role === "owner") { %>
-                            <a href="/app/admin/manager-approvals" class="hover:text-blue-600">Manager Approvals</a>
+                            <a href="/app/admin/manager-approval" class="hover:text-blue-500">Manager Approvals</a>
+                            <a href="/app/admin/all-managers" class="hover:text-blue-500">All Managers</a>
                         <% } %>
-                        <a href="/app/orders" class="hover:text-blue-600">Orders</a>
-                    <% } else { %>
-                        <a href="/app/shop" class="hover:text-blue-600">Shop</a>
-                        <a href="/app/cart" class="hover:text-blue-600">Cart</a>
+                        <a href="/app/orders" class="hover:text-blue-500">Orders</a>
+                        <a href="/app/admin/logout" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow transition">Logout</a>
                     <% } %>
-                    <a href="/app/admin/logout" class="hover:text-white bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition ease-in-out duration-150">Logout</a>
-                </nav>
-            </div>
+                <% } else { %>
+                    <a href="/app/customer/" class="hover:text-blue-500 font-medium">Shop</a>
+                    <a href="/app/customer/login" class="hover:text-blue-500 font-medium">Login</a>
+                    <a href="/app/customer/register" class="hover:text-blue-500 font-medium">Sign Up</a>
+                    <a href="/app/admin/" class="hover:text-blue-500 font-medium">Admin Login</a>
+                <% } %>
+            </nav>
         </div>
-    <% } %>
+    </div>
 
     <!-- Flash Messages -->
     <% if (success_msg) { %>
-        <div id="flash-success" class="fixed top-20 left-1/2 transform -translate-x-1/2 p-4 rounded-md bg-green-500 text-white shadow-lg z-50">
+        <div id="flash-success" class="fixed top-16 left-1/2 transform -translate-x-1/2 p-4 rounded-md bg-green-500 text-white shadow-lg z-50">
             <i class="ri-checkbox-circle-line mr-2"></i><span><%= success_msg %></span>
         </div>
     <% } %>
 
     <% if (error_msg) { %>
-        <div id="flash-error" class="fixed top-20 left-1/2 transform -translate-x-1/2 p-4 rounded-md bg-red-500 text-white shadow-lg z-50">
+        <div id="flash-error" class="fixed top-16 left-1/2 transform -translate-x-1/2 p-4 rounded-md bg-red-500 text-white shadow-lg z-50">
             <i class="ri-error-warning-line mr-2"></i><span><%= error_msg %></span>
         </div>
     <% } %>
