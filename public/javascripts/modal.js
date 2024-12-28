@@ -36,8 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('modalPrice').textContent = productDetails.price;
         document.getElementById('modalStock').textContent = productDetails.stock;
         document.getElementById('modalDiscount').textContent = productDetails.discount;
-        document.getElementById('modalEditLink').href = `/app/product/edit/${productDetails.productId}`;
-        document.getElementById('modalDeleteLink').href = `/app/product/delete/${productDetails.productId}`;
+        if(document.getElementById('modalEditLink') && document.getElementById('modalDeleteLink')){
+            document.getElementById('modalEditLink').href = `/app/product/edit/${productDetails.productId}`;
+            document.getElementById('modalDeleteLink').href = `/app/product/delete/${productDetails.productId}`;
+
+        }
         document.getElementById('productModal').classList.remove('hidden');
     }
 

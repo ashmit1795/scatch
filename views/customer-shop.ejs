@@ -52,7 +52,14 @@
         <!-- Products Grid -->
         <section class="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <% products.forEach(product => { %>
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div data-modal-trigger
+                data-product-id="<%= product._id %>" 
+                data-product-image="<%= product.image %>" 
+                data-product-name="<%= product.name %>" 
+                data-product-description="<%= product.description %>" 
+                data-product-price="<%= product.price %>" 
+                data-product-stock="<%= product.stock %>" 
+                data-product-discount="<%= product.discount %>" class="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div class="h-48 bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
                         <img src="<%= product.image %>" alt="<%= product.name %>" class="h-full w-full object-contain">
                     </div>

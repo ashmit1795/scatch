@@ -59,17 +59,21 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-center gap-4 mt-6">
-                <a id="modalEditLink" href="#" 
-                    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
-                    <i class="ri-edit-line"></i> Edit
-                </a>
-                <a id="modalDeleteLink" href="#" 
-                    class="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300">
-                    <i class="ri-delete-bin-line"></i> Delete
-                </a>
-            </div>
+            <% if (user) { %>
+                <% if(user.role){ %>
+                    <!-- Action Buttons -->
+                    <div class="flex justify-center gap-4 mt-6">
+                        <a id="modalEditLink" href="#" 
+                            class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300">
+                            <i class="ri-edit-line"></i> Edit
+                        </a>
+                        <a id="modalDeleteLink" href="#" 
+                            class="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300">
+                            <i class="ri-delete-bin-line"></i> Delete
+                        </a>
+                    </div>
+                <% } %>
+            <% } %>
         </div>
     </div>
 </div>
