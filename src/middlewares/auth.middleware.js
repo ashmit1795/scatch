@@ -7,48 +7,60 @@ const authDebug = debug('app:middleware:auth');
 
 // Middleware to authenticate the user
 export const authenticateUser = asyncHandler(async (req, res, next) => {
-    const accessToken = req.cookies?.accessToken || req.headers['authorization']?.split(' ')[1];
-    if (!accessToken) {
-        authDebug('No access token provided');
+    try {
+        const accessToken = req.cookies?.accessToken || req.headers['authorization']?.split(' ')[1];
+        if (!accessToken) {
+            authDebug('No access token provided');
+            return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+        }
+    
+        // Verify the access token
+        const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        if (!decodedToken) {
+            authDebug('Invalid access token');
+            return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+        }
+    
+        // Check if the user exists
+        const user = await Admin.findById(decodedToken._id).select("-password -refreshToken");
+        if (!user) {
+            authDebug('User not found');
+            return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+        }
+    
+        req.user = user;
+        next();
+    } catch (error) {
+        authDebug(`Error in authentication: ${error.message}`);
         return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+        
     }
-
-    // Verify the access token
-    const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-    if (!decodedToken) {
-        authDebug('Invalid access token');
-        return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
-    }
-
-    // Check if the user exists
-    const user = await Admin.findById(decodedToken._id).select("-password -refreshToken");
-    if (!user) {
-        authDebug('User not found');
-        return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
-    }
-
-    req.user = user;
-    next();
 });
 
 // Middleware to authorize the user based on the role
 export const authorizeUser = (...allowedRoles) => {
     return async (req, res, next) => {
-        // Check if the user is authorized
-        if (!allowedRoles.includes(req.user.role)) {
-            authDebug('User not authorized');
-            return res.render('error', { user: undefined, message: 'Forbidden', status: 403 });
-        }
-
-        // Check if the manager is approved
-        if (req.user.role === "manager") {
-            const manager = await Admin.findById(req.user._id);
-            if (!manager.approved) {
-                authDebug('Manager access pending approval from owner');
-                return res.render('error', { user: undefined, message: 'Access pending approval from owner', status: 403 });
+        try {
+            // Check if the user is authorized
+            if (!allowedRoles.includes(req.user.role)) {
+                authDebug('User not authorized');
+                return res.render('error', { user: undefined, message: 'Forbidden', status: 403 });
             }
+    
+            // Check if the manager is approved
+            if (req.user.role === "manager") {
+                const manager = await Admin.findById(req.user._id);
+                if (!manager.approved) {
+                    authDebug('Manager access pending approval from owner');
+                    return res.render('error', { user: undefined, message: 'Access pending approval from owner', status: 403 });
+                }
+            }
+            next();
+        } catch (error) {
+            authDebug(`Error in authorization: ${error.message}`);
+            return res.render('error', { user: undefined, message: 'Forbidden', status: 403 });
+            
         }
-        next();
     }
 };
 
