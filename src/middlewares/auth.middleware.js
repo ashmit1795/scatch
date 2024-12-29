@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Admin from '../models/admin.models.js';
+import Customer from '../models/customer.models.js';
 import { asyncHandler } from '../utils/AsyncHandler.js';
 import debug from 'debug';
 
@@ -22,10 +23,14 @@ export const authenticateUser = asyncHandler(async (req, res, next) => {
         }
     
         // Check if the user exists
-        const user = await Admin.findById(decodedToken._id).select("-password -refreshToken");
+        let user = await Admin.findById(decodedToken._id).select("-password -refreshToken");
         if (!user) {
-            authDebug('User not found');
-            return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+            authDebug('Admin not found');
+            user = await Customer.findById(decodedToken._id).select("-password -refreshToken");
+            if (!user) {
+                authDebug('Customer not found');
+                return res.render('error', { user: undefined, message: 'Unauthorized', status: 401 });
+            }
         }
     
         req.user = user;
