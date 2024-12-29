@@ -1,0 +1,131 @@
+<%- include('./partials/header') %>
+
+<div class="py-20 w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100 px-6">
+    <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden flex">
+        <!-- Left Section -->
+        <div class="hidden md:flex w-1/2 bg-gradient-to-tr from-green-500 to-blue-500 text-white items-center justify-center p-10">
+            <div class="text-center space-y-6">
+                <i class="ri-user-add-line text-7xl"></i>
+                <h2 class="text-3xl font-semibold">Register as a Customer</h2>
+                <p class="text-lg">Join us today! Fill out the form below to create your account and start exploring.</p>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="w-full md:w-1/2 p-10">
+            <h4 class="text-2xl font-bold text-gray-800 text-center mb-8 flex items-center justify-center gap-2">
+                <i class="ri-user-line"></i> Customer Registration
+            </h4>
+            <form action="/customers/register" method="post" enctype="multipart/form-data" class="space-y-6">
+                <!-- Username -->
+                <div>
+                    <label for="username" class="text-gray-600 font-medium block mb-2">Username</label>
+                    <input 
+                        id="username" 
+                        type="text" 
+                        name="username" 
+                        placeholder="Enter your username" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="text-gray-600 font-medium block mb-2">Email</label>
+                    <input 
+                        id="email" 
+                        type="email" 
+                        name="email" 
+                        placeholder="Enter your email" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                </div>
+
+                <!-- Full Name -->
+                <div>
+                    <label for="fullName" class="text-gray-600 font-medium block mb-2">Full Name</label>
+                    <input 
+                        id="fullName" 
+                        type="text" 
+                        name="fullName" 
+                        placeholder="Enter your full name" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <label for="contact" class="text-gray-600 font-medium block mb-2">Contact Number</label>
+                    <input 
+                        id="contact" 
+                        type="number" 
+                        name="contact" 
+                        placeholder="Enter your contact number" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label for="address" class="text-gray-600 font-medium block mb-2">Address</label>
+                    <textarea 
+                        id="address" 
+                        name="address" 
+                        placeholder="Enter your address" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    ></textarea>
+                </div>
+
+                <!-- Avatar -->
+                <div>
+                    <label for="avatar" class="text-gray-600 font-medium block mb-2">Avatar</label>
+                    <input 
+                        id="avatar" 
+                        type="file" 
+                        name="avatar" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="relative">
+                    <label for="password" class="text-gray-600 font-medium block mb-2">Password</label>
+                    <input 
+                        id="password" 
+                        type="password" 
+                        name="password" 
+                        placeholder="Enter your password" 
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+                        required
+                    >
+                    <!-- Toggle Password Visibility -->
+                    <button 
+                        type="button" 
+                        id="togglePassword" 
+                        class="absolute right-4 top-14 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                        <i class="ri-eye-line"></i>
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center">
+                    <button 
+                        type="submit" 
+                        class="w-full py-3 bg-gradient-to-r from-green-500 to-blue-600 text-white font-medium rounded-md hover:shadow-lg hover:from-green-600 hover:to-blue-700 transition"
+                    >
+                        Register <i class="ri-user-add-line"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

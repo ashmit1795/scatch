@@ -20,4 +20,9 @@ const renderShop = asyncHandler(async (req, res, next) => {
     return res.render("customer-shop", { user, products });
 });
 
-export { renderShop };
+const renderCustomerRegister = asyncHandler(async(req, res, next) => {
+    customerDebug("Rendering customer registration page");
+    return res.render("customer-register", { user: undefined });
+});
+
+export { renderShop, renderCustomerRegister };
