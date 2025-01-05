@@ -82,7 +82,8 @@ const createAdmin = asyncHandler(async (req, res, next) => {
     const createdAdmin = await Admin.findById(newAdmin._id).select("-password -refreshToken");
     if (!createdAdmin) {
         adminDebug('Error creating admin');
-        throw new AppError(500, 'An error occurred while creating the admin');
+        req.flash('error_msg', 'Error creating admin account');
+        return res.status(500).redirect('/app/admin/create');
     }
 
     const { accessToken, refreshToken } = await generateTokens(createdAdmin._id);
@@ -297,7 +298,7 @@ async function generateTokens(adminId) {
         
     } catch (error) {
         adminDebug(error.message);
-        throw new AppError(500, "An error occurred while generating tokens");
+        res.render('error', { user: undefined, message: error.message, status: 400 })
     } 
 }
 
